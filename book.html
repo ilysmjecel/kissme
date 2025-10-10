@@ -44,7 +44,11 @@
             z-index: 2;
         }
 
-        .container { max-width: 800px; width: 90%; padding: 20px; }
+        .container { 
+            max-width: 800px; 
+            width: 90%; 
+            padding: 20px; 
+        }
 
         h1 {
             font-family: 'Dancing Script', cursive;
@@ -67,7 +71,12 @@
             50% { transform: translateY(-10px); }
         }
 
-        .subtitle { font-size: 1.2rem; margin-bottom: 30px; opacity: 0.8; font-weight: 300; }
+        .subtitle { 
+            font-size: 1.2rem; 
+            margin-bottom: 30px; 
+            opacity: 0.8; 
+            font-weight: 300; 
+        }
 
         .romantic-border {
             border: 2px solid rgba(255, 182, 193, 0.5);
@@ -80,6 +89,7 @@
             animation: fadeIn 0.8s ease-out;
             position: relative;
             z-index: 10;
+            width: 100%;
         }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -397,14 +407,120 @@
 
         .hidden { display: none !important; }
 
-        /* Responsive */
+        /* Responsive - IMPROVED FOR MOBILE */
         @media (max-width: 600px) {
+            h1 { font-size: 3rem; }
+            h2 { font-size: 2.2rem; }
+            .romantic-border { 
+                padding: 30px 20px; 
+                margin: 10px 0;
+                width: 95%;
+            }
+            .memory-game { 
+                grid-template-columns: repeat(3, 1fr); 
+                gap: 8px;
+            }
+            .love-percentage { font-size: 4rem; }
+            .nav-dots { display: none; }
+            
+            /* Improved text readability */
+            .subtitle { 
+                font-size: 1.3rem; 
+                line-height: 1.5;
+                margin-bottom: 20px;
+            }
+            
+            /* Larger buttons for mobile */
+            button {
+                padding: 15px 25px;
+                font-size: 1.1rem;
+                margin: 8px 4px;
+            }
+            
+            /* IMPROVED: Better font for messages and text readability */
+            .compliment-text {
+                font-size: 1.3rem;
+                line-height: 1.6;
+                font-family: 'Poppins', sans-serif;
+            }
+            
+            /* Better music player on mobile */
+            .music-player {
+                width: 100%;
+                max-width: 100%;
+            }
+            
+            .song-btn {
+                padding: 18px 15px;
+                font-size: 1.1rem;
+            }
+            
+            /* Better starry night on mobile */
+            .starry-night {
+                height: 50vh;
+            }
+            
+            /* Improved message box */
+            .message-box {
+                padding: 25px 20px;
+                width: 90%;
+            }
+            
+            /* IMPROVED: Better text in message box with readable font */
+            #messageText {
+                font-size: 1.2rem;
+                line-height: 1.5;
+                font-family: 'Poppins', sans-serif;
+            }
+            
+            /* IMPROVED: Better love declaration text with readable font */
+            #loveDeclaration {
+                font-size: 1.1rem;
+                line-height: 1.6;
+                text-align: left;
+                font-family: 'Poppins', sans-serif;
+            }
+            
+            /* Better container spacing */
+            .container {
+                padding: 10px;
+                width: 100%;
+            }
+            
+            /* Improved navigation buttons */
+            .nav-under {
+                flex-wrap: wrap;
+            }
+            
+            .nav-under button {
+                flex: 1;
+                min-width: 140px;
+            }
+        }
+
+        /* Extra small devices */
+        @media (max-width: 400px) {
             h1 { font-size: 2.5rem; }
             h2 { font-size: 2rem; }
-            .romantic-border { padding: 20px; }
-            .memory-game { grid-template-columns: repeat(3, 1fr); }
-            .love-percentage { font-size: 3rem; }
-            .nav-dots { display: none; } /* hide small nav-dots on tiny screens */
+            .romantic-border { 
+                padding: 25px 15px; 
+            }
+            button {
+                padding: 12px 20px;
+                font-size: 1rem;
+            }
+            .compliment-text {
+                font-size: 1.2rem;
+                font-family: 'Poppins', sans-serif;
+            }
+            #loveDeclaration {
+                font-size: 1rem;
+                font-family: 'Poppins', sans-serif;
+            }
+            #messageText {
+                font-size: 1.1rem;
+                font-family: 'Poppins', sans-serif;
+            }
         }
     </style>
 </head>
@@ -556,7 +672,7 @@
                 <p class="subtitle">inside and out</p>
 
                 <div class="compliment-box">
-                    <p class="compliment-text" id="complimentText">The prettiest and kindest person I’ve known.</p>
+                    <p class="compliment-text" id="complimentText">The prettiest and kindest person I've known.</p>
                 </div>
 
                 <button id="newCompliment"><i class="fas fa-redo" style="margin-right: 8px;"></i> More</button>
