@@ -80,9 +80,8 @@
       justify-content: center;
       margin-top: 30px;
       gap: 25px;
-      flex-wrap: nowrap; /* FIX 1: Prevent wrapping */
+      flex-wrap: nowrap; /* Prevent wrapping */
       position: relative; 
-      /* Ensures cards stay centered and don't take up excessive width */
       max-width: 100%; 
       overflow: hidden; 
     }
@@ -90,7 +89,7 @@
     .card {
       width: 170px;
       height: 230px;
-      flex-shrink: 0; /* Ensures the cards don't shrink below their defined width */
+      flex-shrink: 0; 
       perspective: 1000px;
       position: relative;
       transition: transform 0.3s ease;
@@ -202,9 +201,18 @@
     @media (max-width: 600px) {
       h1 { font-size: 2.5rem; }
       
-      /* FIX 2: Reduce card size and gap to fit all three on a single line */
-      .card { width: 100px; height: 150px; } 
-      .cards { gap: 10px; } 
+      /* 💖 FIX: Use viewport width (vw) for cards to ensure they scale and fit side-by-side */
+      .cards { 
+          /* Adjust gap to ensure enough space for three cards */
+          gap: 2vw;
+          justify-content: space-between;
+          padding: 0 5px;
+      }
+      
+      .card { 
+          width: 30vw; /* 3 cards * 30vw = 90vw. Fits perfectly inside 100vw. */
+          height: 42vw; /* Maintain aspect ratio */
+      } 
       
       .final-image { width: 200px; height: 250px; }
       .romantic-border { padding: 20px; }
@@ -501,7 +509,6 @@
     });
 
     playAgainBtn.addEventListener("click", () => { 
-      // This is now redundant but kept for full reset logic
       final.classList.add("hidden"); 
       game.classList.remove("hidden"); 
       attempts = 0; 
