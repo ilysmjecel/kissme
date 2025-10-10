@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>For My Love</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: "Poppins", sans-serif;
+            text-align: center;
+            background: linear-gradient(135deg, #ffd6e7 0%, #ffb6c1 100%);
+            overflow-x: hidden;
+            min-height: 100vh;
+            color: #8a2b53;
+            transition: background 1s ease;
+        }
+
+        /* Page container */
+        .page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+            position: absolute;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        .page.active {
+            opacity: 1;
+            transform: translateY(0);
+            position: relative;
+            z-index: 2;
+        }
+
+        .container { max-width: 800px; width: 90%; padding: 20px; }
+
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 4rem;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            color: #c44569;
+            animation: titleFloat 3s ease-in-out infinite;
+        }
+
+        h2 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: #c44569;
+        }
+
+        @keyframes titleFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .subtitle { font-size: 1.2rem; margin-bottom: 30px; opacity: 0.8; font-weight: 300; }
+
+        .romantic-border {
+            border: 2px solid rgba(255, 182, 193, 0.5);
+            border-radius: 20px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            animation: fadeIn 0.8s ease-out;
+            position: relative;
+            z-index: 10;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        button {
+            padding: 12px 30px;
+            margin-top: 12px;
+            margin-left: 8px;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(to right, #e84393, #fd79a8);
+            color: white;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 8px 20px rgba(232, 67, 147, 0.3);
+            position: relative;
+            overflow: hidden;
+            z-index: 20;
+        }
+
+        button.secondary {
+            background: white;
+            color: #c44569;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.06);
+        }
+
+        button:hover { transform: translateY(-4px); box-shadow: 0 12px 25px rgba(232, 67, 147, 0.4); }
+        button:active { transform: translateY(0); }
+
+        /* Navigation dots */
+        .nav-dots {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 10px 20px;
+            border-radius: 30px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ffb6c1;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background: #e84393;
+            transform: scale(1.3);
+        }
+
+        /* Page 1 - Greeting */
+        .heart-beat {
+            animation: heartbeat 1.5s ease-in-out infinite both;
+        }
+
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            25% { transform: scale(1.1); }
+            50% { transform: scale(1); }
+            75% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Page 2 - Music Player */
+        .music-player {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .song-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 20px;
+            background: white;
+            border-radius: 50px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 20;
+            position: relative;
+        }
+
+        .song-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+
+        .song-btn.active {
+            background: linear-gradient(to right, #e84393, #fd79a8);
+            color: white;
+        }
+
+        .song-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .song-title {
+            font-weight: 500;
+        }
+
+        .play-icon {
+            font-size: 1.5rem;
+        }
+
+        /* Page 3 - Memory Game */
+        .memory-game {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .memory-card {
+            width: 100%;
+            aspect-ratio: 1;
+            perspective: 1000px;
+            cursor: pointer;
+            position: relative;
+            z-index: 10;
+        }
+
+        .memory-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            border-radius: 10px;
+        }
+
+        .memory-card.flipped .memory-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .memory-card-front, .memory-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 10px;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .memory-card-front {
+            background: linear-gradient(135deg, #e84393, #fd79a8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+
+        .memory-card-back {
+            background: white;
+            transform: rotateY(180deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .memory-card-back img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Page 4 - Starry Night */
+        .starry-night {
+            position: relative;
+            width: 100%;
+            height: 60vh;
+            background: linear-gradient(to bottom, #0a0a2a, #1a1a4a);
+            border-radius: 20px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite alternate;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+
+        .message-box {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            max-width: 80%;
+            display: none;
+            z-index: 50;
+        }
+
+        /* Page 5 - Love Percentage */
+        .love-percentage {
+            font-size: 5rem;
+            font-weight: bold;
+            margin: 30px 0;
+            color: #e84393;
+            font-family: 'Dancing Script', cursive;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 20px;
+            background: rgba(255, 182, 193, 0.3);
+            border-radius: 10px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(to right, #e84393, #fd79a8);
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+
+        /* Page 6 - Compliments */
+        .compliment-box {
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            margin: 20px 0;
+            max-width: 500px;
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .compliment-text {
+            font-size: 1.5rem;
+            font-family: 'Dancing Script', cursive;
+            color: #c44569;
+        }
+
+        /* Page 7 - Love Declaration */
+        .love-icon { font-size: 2rem; margin: 0 10px; color: #e84393; }
+
+        /* Floating elements */
+        .floating-element {
+            position: fixed;
+            animation: float 8s linear infinite;
+            opacity: 0.7;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0.7; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #e84393;
+            animation: confetti-fall 5s linear infinite;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        @keyframes confetti-fall {
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* small helpers */
+        .nav-under {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 18px;
+            position: relative;
+            z-index: 20;
+        }
+
+        .hidden { display: none !important; }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            h1 { font-size: 2.5rem; }
+            h2 { font-size: 2rem; }
+            .romantic-border { padding: 20px; }
+            .memory-game { grid-template-columns: repeat(3, 1fr); }
+            .love-percentage { font-size: 3rem; }
+            .nav-dots { display: none; } /* hide small nav-dots on tiny screens */
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation dots -->
+    <div class="nav-dots" aria-hidden="true">
+        <div class="dot active" data-page="0"></div>
+        <div class="dot" data-page="1"></div>
+        <div class="dot" data-page="2"></div>
+        <div class="dot" data-page="3"></div>
+        <div class="dot" data-page="4"></div>
+        <div class="dot" data-page="5"></div>
+        <div class="dot" data-page="6"></div>
+    </div>
+
+    <!-- Page 1: Greeting -->
+    <div class="page active" id="page1">
+        <div class="container">
+            <div class="romantic-border">
+                <i class="fas fa-heart heart-beat" style="font-size: 4rem; color: #e84393; margin-bottom: 20px;"></i>
+                <h1>Hello, My Love</h1>
+                <p class="subtitle">Happy Monthsary</p>
+                <button id="startBtn"><i class="fas fa-play" style="margin-right: 8px;"></i> I Love You</button>
+
+                <!-- Prev/Next under the box (will be present on all pages) -->
+                <div class="nav-under" aria-hidden="false">
+                    <button id="prevBtn" class="secondary"><i class="fas fa-arrow-left" style="margin-right:8px"></i> Previous</button>
+                    <button id="nextBtn"><i class="fas fa-arrow-right" style="margin-left:8px"></i> Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 2: Music Player -->
+    <div class="page" id="page2">
+        <div class="container">
+            <div class="romantic-border">
+                <h2>Mwehihihi</h2>
+                <p class="subtitle">songs that reminds me of you</p>
+
+                <div class="music-player">
+                    <div class="song-btn" data-song="s1.mp3">
+                        <div class="song-info">
+                            <i class="fas fa-music"></i>
+                            <span class="song-title">Kiss Me</span>
+                        </div>
+                        <i class="fas fa-play play-icon"></i>
+                    </div>
+
+                    <div class="song-btn" data-song="s2.mp3">
+                        <div class="song-info">
+                            <i class="fas fa-music"></i>
+                            <span class="song-title">All I Ever Need</span>
+                        </div>
+                        <i class="fas fa-play play-icon"></i>
+                    </div>
+
+                    <div class="song-btn" data-song="s3.mp3">
+                        <div class="song-info">
+                            <i class="fas fa-music"></i>
+                            <span class="song-title">Your Universe</span>
+                        </div>
+                        <i class="fas fa-play play-icon"></i>
+                    </div>
+                </div>
+
+                <div style="margin-top:12px">
+                    <button id="stopMusic" class="secondary"><i class="fas fa-stop" style="margin-right:8px"></i> Stop Music</button>
+                </div>
+
+                <div class="nav-under">
+                    <button id="prevBtn2" class="secondary"><i class="fas fa-arrow-left" style="margin-right:8px"></i> Previous</button>
+                    <button id="nextBtn2"><i class="fas fa-arrow-right" style="margin-left:8px"></i> Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 3: Memory Game -->
+    <div class="page" id="page3">
+        <div class="container">
+            <div class="romantic-border">
+                <h2>You & Me</h2>
+                <p class="subtitle">gaurrr mahal match mo</p>
+
+                <div class="memory-game" id="memoryGame">
+                    <!-- Cards generated by JS -->
+                </div>
+
+                <button id="nextToStars" class="hidden"><i class="fas fa-star" style="margin-right: 8px;"></i> Stars</button>
+
+                <div class="nav-under">
+                    <button id="prevBtn3" class="secondary"><i class="fas fa-arrow-left" style="margin-right:8px"></i> Previous</button>
+                    <button id="nextBtn3"><i class="fas fa-arrow-right" style="margin-left:8px"></i> Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 4: Starry Night -->
+    <div class="page" id="page4">
+        <div class="container">
+            <div class="romantic-border">
+                <h2>You Are My Star</h2>
+                <p class="subtitle"> click mo yung stars hehe</p>
+
+                <div class="starry-night" id="starryNight">
+                    <div class="message-box" id="messageBox">
+                        <p id="messageText"></p>
+                        <div style="margin-top:10px">
+                            <button id="closeMessage" class="secondary">Close</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nav-under">
+                    <button id="prevBtn4" class="secondary"><i class="fas fa-arrow-left" style="margin-right:8px"></i> Previous</button>
+                    <button id="nextBtn4"><i class="fas fa-arrow-right" style="margin-left:8px"></i> Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 5: Love Percentage -->
+    <div class="page" id="page5">
+        <div class="container">
+            <div class="romantic-border">
+                <h2>How Much I Love You</h2>
+                <p class="subtitle">told you, i love you more <3</p>
+
+                <div class="love-percentage" id="lovePercentage">0%</div>
+                <div class="progress-container">
+                    <div class="progress-bar" id="loveProgress"></div>
+                </div>
+
+                <div class="nav-under">
+                    <button id="prevBtn5" class="secondary"><i class="fas fa-arrow-left" style="margin-right:8px"></i> Previous</button>
+                    <button id="nextBtn5"><i class="fas fa-arrow-right" style="margin-left:8px"></i> Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 6: Compliments -->
+    <div class="page" id="page6">
+        <div class="container">
+            <div class="romantic-border">
+                <h2>You Are Beautiful</h2>
+                <p class="subtitle">inside and out</p>
+
+                <div class="compliment-box">
+                    <p class="compliment-text" id="complimentText">The prettiest and kindest person I’ve known.</p>
+                </div>
+
+                <button id="newCompliment"><i class="fas fa-redo" style="margin-right: 8px;"></i> More</button>
+
+                <div class="nav-under">
+                    <button id="prevBtn6" class="secondary"><i class="fas fa-arrow-left" style="margin-right:8px"></i> Previous</button>
+                    <button id="nextBtn6"><i class="fas fa-arrow-right" style="margin-left:8px"></i> Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 7: Love Declaration -->
+    <div class="page" id="page7">
+        <div class="container">
+            <div class="romantic-border">
+                <h2>Jecel Mahal</h2>
+                <p class="subtitle">I Love You So Much</p>
+
+                <div class="compliment-box">
+                    <p class="compliment-text" id="loveDeclaration">Haii baby hehe, um gusto ko lang sabihin na mahal na mahal kita. I know bata pa tayo pero gusto ko tumandang mag kasama tayo, please let's grow together asawa ko. I really and truly love you beh, I dont know how to say it but I hope you feel it. Mwehihihi I'm so lucky to have you beh I really am, I appreciate you mahal. I don't want this to be sad or something pero I just wanna say na I'm sorry for the way I am sometimes. I genuinely want the best for you and see you happy, but I'm not perfect and I messed up most of the time so I really am sorry for that. Hehehe okies now lets go back to happy happy na kasi I'm really happy to have you talaga, I couldn't ask for more because you are more than enough. Thank youuu so much my love. Also wala akong kabit, bago ka nakarating dito ilan naging kabit mo dun sa pina laro ko Hahahahahahaha.</p>
+                </div>
+
+                <div style="margin-bottom:12px">
+                    <i class="fas fa-heart love-icon"></i>
+                    <i class="fas fa-heart love-icon"></i>
+                    <i class="fas fa-heart love-icon"></i>
+                </div>
+
+                <div class="nav-under">
+                    <button id="prevBtn7" class="secondary"><i class="fas fa-arrow-left" style="margin-right:8px"></i> Previous</button>
+                    <button id="restartJourney"><i class="fas fa-redo" style="margin-left:8px"></i> ILYSM</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // page elements
+        const pages = document.querySelectorAll('.page');
+        const dots = document.querySelectorAll('.dot');
+        let currentPage = 0;
+
+        // audio
+        const songButtons = document.querySelectorAll('.song-btn');
+        let currentAudio = null;
+
+        // memory game elements
+        const memoryGame = document.getElementById('memoryGame');
+        const images = ['p1.jpeg', 'p2.jpeg', 'p3.jpeg', 'p4.jpeg', 'p5.jpeg', 'p6.jpeg'];
+        let cards = [];
+        let flippedCards = [];
+        let matchedPairs = 0;
+
+        // starry night
+        const starryNight = document.getElementById('starryNight');
+        const messageBox = document.getElementById('messageBox');
+        const messageText = document.getElementById('messageText');
+        const closeMessage = document.getElementById('closeMessage');
+
+        const messages = [
+            "👉👌.",
+            "You have the purest and kindest heart, ilysm.",
+            "Ang ganda ganda mo.",
+            "You're so cute, I wanna bite you.",
+            "Sana tayo hanggang dulo.",
+            "I love youuu asawa ko.",
+            "You are the cutest person I know.",
+            "I wanna ride you, joke na hindi.",
+            "I love everything about you btw.",
+            "You are my one and only."
+        ];
+
+        // compliments
+        const complimentText = document.getElementById('complimentText');
+        const compliments = [
+            "You are all I ever need.",
+            "You are so damn fyne mylove.",
+            "I love you for eternity.",
+            "I want you all for myself.",
+            "I loveee so much.",
+            "It's okay to cry sometimes mylove.",
+            "I love you and will continue to do so.",
+            "I love everything about you, mylove.",
+            "You're my very beautiful asawa.",
+            "You're perfect just the way you are."
+        ];
+
+        // love percentage
+        const lovePercentage = document.getElementById('lovePercentage');
+        const loveProgress = document.getElementById('loveProgress');
+        let loveInterval = null;
+
+        // confetti / floating helpers
+        function createRomanticElement() {
+            const el = document.createElement("div");
+            el.className = "floating-element";
+            el.style.left = Math.random() * 100 + "vw";
+            el.style.fontSize = (Math.random() * 20 + 15) + "px";
+            el.style.animationDuration = (Math.random() * 5 + 5) + "s";
+            const emojis = ["💖", "💕", "🌸", "💘", "💝", "🌹"];
+            el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+            el.style.color = ["#e84393","#fd79a8","#ffb6c1","#c44569","#ff9ff3"][Math.floor(Math.random()*5)];
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 10000);
+        }
+
+        function createConfetti() {
+            for (let i = 0; i < 150; i++) {
+                setTimeout(() => {
+                    const c = document.createElement("div");
+                    c.className = "confetti";
+                    c.style.left = Math.random() * 100 + "vw";
+                    c.style.backgroundColor = ["#e84393","#fd79a8","#ffb6c1","#c44569","#ff9ff3"][Math.floor(Math.random()*5)];
+                    c.style.width = Math.random() * 10 + 5 + "px";
+                    c.style.height = Math.random() * 10 + 5 + "px";
+                    c.style.animationDuration = Math.random() * 3 + 2 + "s";
+                    document.body.appendChild(c);
+                    setTimeout(() => c.remove(), 5000);
+                }, i * 20);
+            }
+        }
+
+        // show page function — central place for page logic
+        function showPage(pageIndex) {
+            if (pageIndex < 0) pageIndex = 0;
+            if (pageIndex >= pages.length) pageIndex = pages.length - 1;
+
+            pages.forEach(page => page.classList.remove('active'));
+            dots.forEach(dot => dot.classList.remove('active'));
+
+            pages[pageIndex].classList.add('active');
+            dots[pageIndex].classList.add('active');
+
+            currentPage = pageIndex;
+
+            // page-specific inits
+            if (pageIndex === 2) { // memory game page
+                if (memoryGame.children.length === 0) initMemoryGame();
+            }
+            if (pageIndex === 3) { // starry night
+                if (starryNight.children.length <= 1) createStars();
+            }
+            if (pageIndex === 4) { // love percentage
+                startLovePercentage();
+            } else {
+                // stop any running love counter when leaving page 5
+                if (loveInterval) {
+                    clearInterval(loveInterval);
+                    loveInterval = null;
+                }
+            }
+
+            // create a small floating element to keep things pretty
+            createRomanticElement();
+
+            // scroll top of page if content overflowed
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // navigation with dots
+        dots.forEach(dot => {
+            dot.addEventListener('click', () => {
+                const pageIndex = parseInt(dot.getAttribute('data-page'));
+                showPage(pageIndex);
+            });
+        });
+
+        // main buttons
+        document.getElementById('startBtn').addEventListener('click', () => showPage(1));
+        document.getElementById('nextToStars').addEventListener('click', () => showPage(3));
+        document.getElementById('restartJourney').addEventListener('click', () => showPage(0));
+
+        // Prev/Next buttons under each page (bindings)
+        document.getElementById('prevBtn').addEventListener('click', () => showPage(currentPage - 1));
+        document.getElementById('nextBtn').addEventListener('click', () => showPage(currentPage + 1));
+
+        document.getElementById('prevBtn2').addEventListener('click', () => showPage(currentPage - 1));
+        document.getElementById('nextBtn2').addEventListener('click', () => showPage(currentPage + 1));
+
+        document.getElementById('prevBtn3').addEventListener('click', () => showPage(currentPage - 1));
+        document.getElementById('nextBtn3').addEventListener('click', () => showPage(currentPage + 1));
+
+        document.getElementById('prevBtn4').addEventListener('click', () => showPage(currentPage - 1));
+        document.getElementById('nextBtn4').addEventListener('click', () => showPage(currentPage + 1));
+
+        document.getElementById('prevBtn5').addEventListener('click', () => showPage(currentPage - 1));
+        document.getElementById('nextBtn5').addEventListener('click', () => showPage(currentPage + 1));
+
+        document.getElementById('prevBtn6').addEventListener('click', () => showPage(currentPage - 1));
+        document.getElementById('nextBtn6').addEventListener('click', () => showPage(currentPage + 1));
+
+        document.getElementById('prevBtn7').addEventListener('click', () => showPage(currentPage - 1));
+
+        // Page 2: Music Player logic
+        songButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const song = this.getAttribute('data-song');
+
+                // toggle same button: pause if same playing
+                if (this.classList.contains('active') && currentAudio) {
+                    currentAudio.pause();
+                    currentAudio.currentTime = 0;
+                    this.classList.remove('active');
+                    this.querySelector('.play-icon').className = 'fas fa-play play-icon';
+                    currentAudio = null;
+                    return;
+                }
+
+                // remove active class from all buttons
+                songButtons.forEach(btn => {
+                    btn.classList.remove('active');
+                    const icon = btn.querySelector('.play-icon');
+                    if (icon) icon.className = 'fas fa-play play-icon';
+                });
+
+                // set clicked
+                this.classList.add('active');
+                this.querySelector('.play-icon').className = 'fas fa-pause play-icon';
+
+                // stop previous audio
+                if (currentAudio) {
+                    try { currentAudio.pause(); currentAudio.currentTime = 0; } catch (e) {}
+                }
+
+                // play new audio (assumes file in same folder)
+                currentAudio = new Audio(song);
+                currentAudio.loop = true;
+                currentAudio.play().catch(e => console.log("Audio play failed:", e));
+            });
+        });
+
+        // stop music button
+        document.getElementById('stopMusic').addEventListener('click', () => {
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+                currentAudio = null;
+                songButtons.forEach(btn => {
+                    btn.classList.remove('active');
+                    const icon = btn.querySelector('.play-icon');
+                    if (icon) icon.className = 'fas fa-play play-icon';
+                });
+            }
+        });
+
+        // Memory game logic
+        function initMemoryGame() {
+            memoryGame.innerHTML = '';
+            cards = [];
+            flippedCards = [];
+            matchedPairs = 0;
+            document.getElementById('nextToStars').classList.add('hidden');
+
+            // duplicate and shuffle
+            const gameImages = [...images, ...images];
+            for (let i = gameImages.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [gameImages[i], gameImages[j]] = [gameImages[j], gameImages[i]];
+            }
+
+            gameImages.forEach((img, index) => {
+                const card = document.createElement('div');
+                card.className = 'memory-card';
+                card.dataset.image = img;
+                card.innerHTML = `
+                    <div class="memory-card-inner">
+                        <div class="memory-card-front">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div class="memory-card-back">
+                            <img src="${img}" alt="Memory ${index+1}">
+                        </div>
+                    </div>
+                `;
+                card.addEventListener('click', flipCard);
+                memoryGame.appendChild(card);
+                cards.push(card);
+            });
+        }
+
+        function flipCard() {
+            if (flippedCards.length < 2 && !this.classList.contains('flipped') && !this.classList.contains('matched')) {
+                this.classList.add('flipped');
+                flippedCards.push(this);
+
+                if (flippedCards.length === 2) checkForMatch();
+            }
+        }
+
+        function checkForMatch() {
+            const [card1, card2] = flippedCards;
+            const isMatch = card1.dataset.image === card2.dataset.image;
+
+            if (isMatch) {
+                card1.classList.add('matched');
+                card2.classList.add('matched');
+                matchedPairs++;
+                // small celebration when matched
+                setTimeout(() => {
+                    card1.style.transform = "scale(1.03)";
+                    card2.style.transform = "scale(1.03)";
+                }, 200);
+
+                if (matchedPairs === images.length) {
+                    setTimeout(() => {
+                        document.getElementById('nextToStars').classList.remove('hidden');
+                        createConfetti();
+                    }, 500);
+                }
+            } else {
+                setTimeout(() => {
+                    card1.classList.remove('flipped');
+                    card2.classList.remove('flipped');
+                }, 800);
+            }
+
+            setTimeout(() => { flippedCards = []; }, 900);
+        }
+
+        // Starry night logic
+        function createStars() {
+            starryNight.innerHTML = '';
+            messageBox.style.display = 'none';
+
+            for (let i = 0; i < 20; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+
+                // Random size
+                const size = Math.random() * 10 + 5;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+
+                // Random position
+                star.style.left = `${Math.random() * 95}%`;
+                star.style.top = `${Math.random() * 95}%`;
+
+                // Random twinkle delay and speed
+                star.style.animationDelay = `${Math.random() * 3}s`;
+                star.style.animationDuration = `${Math.random() * 2 + 1.5}s`;
+
+                star.addEventListener('click', () => {
+                    const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+                    messageText.textContent = randomMessage;
+                    messageBox.style.display = 'block';
+                });
+
+                starryNight.appendChild(star);
+            }
+
+            // append message box on top
+            starryNight.appendChild(messageBox);
+        }
+
+        closeMessage.addEventListener('click', () => {
+            messageBox.style.display = 'none';
+        });
+
+        // Love percentage animation (1 -> 100 -> ERROR -> ∞)
+        function startLovePercentage() {
+            // reset
+            if (loveInterval) {
+                clearInterval(loveInterval);
+                loveInterval = null;
+            }
+            let percentage = 0;
+            lovePercentage.textContent = `${percentage}%`;
+            lovePercentage.style.color = '#e84393';
+            loveProgress.style.width = '0%';
+
+            loveInterval = setInterval(() => {
+                percentage++;
+                lovePercentage.textContent = `${percentage}%`;
+                loveProgress.style.width = `${percentage}%`;
+
+                if (percentage >= 100) {
+                    clearInterval(loveInterval);
+                    loveInterval = null;
+                    setTimeout(() => {
+                        lovePercentage.textContent = "ERROR";
+                        lovePercentage.style.color = "#ff0000";
+                        loveProgress.style.width = '100%';
+                        setTimeout(() => {
+                            lovePercentage.textContent = "∞";
+                            lovePercentage.style.color = "#e84393";
+                            createConfetti();
+                        }, 1500);
+                    }, 1000);
+                }
+            }, 25);
+        }
+
+        // Compliments
+        document.getElementById('newCompliment').addEventListener('click', () => {
+            const randomCompliment = compliments[Math.floor(Math.random() * compliments.length)];
+            complimentText.textContent = randomCompliment;
+        });
+
+        // nextToStars button (in memory page) - show stars page when clicked
+        document.getElementById('nextToStars').addEventListener('click', () => showPage(3));
+
+        // keyboard navigation (left/right)
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') showPage(currentPage - 1);
+            if (e.key === 'ArrowRight') showPage(currentPage + 1);
+        });
+
+        // small periodic floating elements
+        setInterval(createRomanticElement, 1200);
+
+        // initialize UI
+        showPage(0);
+    </script>
+</body>
+</html>
