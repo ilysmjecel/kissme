@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Find Your True Love</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "Poppins", sans-serif;
+      text-align: center;
+      background: linear-gradient(135deg, #ffd6e7 0%, #ffb6c1 100%);
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: #8a2b53;
+    }
+
+    .container { max-width: 800px; width: 90%; padding: 20px; }
+
+    h1 {
+      font-family: 'Dancing Script', cursive;
+      font-size: 4rem;
+      margin-bottom: 15px;
+      text-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      color: #c44569;
+      animation: titleFloat 3s ease-in-out infinite;
+    }
+
+    @keyframes titleFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .subtitle { font-size: 1.2rem; margin-bottom: 30px; opacity: 0.8; font-weight: 300; }
+
+    .romantic-border {
+      border: 2px solid rgba(255, 182, 193, 0.5);
+      border-radius: 20px;
+      padding: 30px;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(5px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      animation: fadeIn 0.8s ease-out;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    button {
+      padding: 15px 40px;
+      margin-top: 20px;
+      border: none;
+      border-radius: 50px;
+      background: linear-gradient(to right, #e84393, #fd79a8);
+      color: white;
+      font-size: 18px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 20px rgba(232, 67, 147, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    button:hover { transform: translateY(-5px); box-shadow: 0 12px 25px rgba(232, 67, 147, 0.4); }
+    button:active { transform: translateY(0); }
+
+    .hidden { display: none; }
+    .d-block { display: block !important; }
+
+    .cards {
+      display: flex;
+      justify-content: center;
+      margin-top: 30px;
+      gap: 25px;
+      flex-wrap: nowrap; /* FIX 1: Prevent wrapping */
+      position: relative; 
+      /* Ensures cards stay centered and don't take up excessive width */
+      max-width: 100%; 
+      overflow: hidden; 
+    }
+
+    .card {
+      width: 170px;
+      height: 230px;
+      flex-shrink: 0; /* Ensures the cards don't shrink below their defined width */
+      perspective: 1000px;
+      position: relative;
+      transition: transform 0.3s ease;
+      cursor: pointer;
+    }
+
+    .card:hover { transform: translateY(-10px); }
+
+    .card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+    }
+
+    .card.flipped .card-inner { transform: rotateY(180deg); }
+
+    .card-front, .card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    }
+
+    .card-front {
+      background: linear-gradient(135deg, #e84393, #fd79a8);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      color: white;
+      border: 2px solid white;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+    }
+
+    .card-front i { margin-bottom: 10px; }
+    .card-back { transform: rotateY(180deg); background: white; display: flex; align-items: center; justify-content: center; border: 2px solid #ffb6c1; }
+    .card-back img { width: 100%; height: 100%; object-fit: cover; }
+
+    #resultText { margin-top: 20px; font-size: 1.5rem; }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      50% { transform: translateX(5px); }
+      75% { transform: translateX(-5px); }
+    }
+    .shake { animation: shake 0.5s; }
+
+    @keyframes tada {
+      0% { transform: scale(1); }
+      10%, 20% { transform: scale(0.9) rotate(-3deg); }
+      30%, 50%, 70%, 90% { transform: scale(1.1) rotate(3deg); }
+      40%, 60%, 80% { transform: scale(1.1) rotate(-3deg); }
+      100% { transform: scale(1) rotate(0); }
+    }
+    .tada { animation: tada 1s; }
+
+    .floating-element { position: fixed; animation: float 8s linear infinite; opacity: 0.7; z-index: 0; }
+    @keyframes float { 0% { transform: translateY(100vh) rotate(0deg); opacity: 0.7; } 100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; } }
+
+    .progress-container {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 182, 193, 0.3);
+      border-radius: 4px;
+      margin: 20px 0;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(to right, #e84393, #fd79a8);
+      width: 0%;
+      transition: width 0.3s ease;
+      border-radius: 4px;
+    }
+
+    .attempt-counter { font-size: 1rem; margin-bottom: 10px; opacity: 0.8; }
+
+    .final-image {
+      width: 250px; height: 300px; object-fit: cover; border-radius: 15px;
+      margin: 20px auto; 
+      box-shadow: 0 15px 30px rgba(0,0,0,0.2); border: 3px solid white; animation: tada 2s;
+    }
+
+    .final-video {
+      width: 300px; max-width: 90%; border-radius: 15px; margin: 20px auto; 
+      box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+    }
+
+    .confetti { position: fixed; width: 10px; height: 10px; background: #e84393; animation: confetti-fall 5s linear infinite; z-index: 1000; }
+    @keyframes confetti-fall { 0% { transform: translateY(-100px) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(360deg); opacity: 0; } }
+
+    .romantic-message { font-family: 'Dancing Script', cursive; font-size: 1.8rem; margin: 20px 0; color: #c44569; }
+    .love-icon { font-size: 2rem; margin: 0 10px; color: #e84393; }
+    .shuffle-indicator { font-size: 1.2rem; margin: 15px 0; color: #e84393; font-weight: 500; opacity: 0; transition: opacity 0.5s; }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 2.5rem; }
+      
+      /* FIX 2: Reduce card size and gap to fit all three on a single line */
+      .card { width: 100px; height: 150px; } 
+      .cards { gap: 10px; } 
+      
+      .final-image { width: 200px; height: 250px; }
+      .romantic-border { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Find Your True Love</h1>
+    <p class="subtitle">Follow your heart to find your special someone</p>
+
+    <div id="startScreen">
+      <div class="romantic-border">
+        <p class="romantic-message">Love is composed of a single soul inhabiting two bodies</p>
+        <button id="playBtn"><i class="fas fa-heart" style="margin-right: 8px;"></i> Find Your Love</button>
+      </div>
+    </div>
+
+    <div id="game" class="hidden">
+      <div class="romantic-border">
+        <h2>Where's your true love?</h2>
+        <p class="attempt-counter" id="attemptCounter">Attempts: 0</p>
+        <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
+        <p class="shuffle-indicator" id="shuffleIndicator">Shuffling cards...</p>
+        <div class="cards" id="cardContainer"></div>
+      </div>
+    </div>
+
+    <div id="result" class="hidden">
+      <div class="romantic-border">
+        <h2 id="resultText"></h2>
+        <img id="wrongImg" src="" class="hidden final-image"><br>
+        <button id="retryBtn" class="hidden"><i class="fas fa-redo" style="margin-right: 8px;"></i> Try Again</button>
+      </div>
+    </div>
+
+    <div id="final" class="hidden">
+      <div class="romantic-border">
+        <h2 class="romantic-message">Congratulations! You found your true love!</h2>
+        <i class="fas fa-heart love-icon"></i><i class="fas fa-heart love-icon"></i><i class="fas fa-heart love-icon"></i>
+        
+        <div id="finalStep1" class="hidden d-block">
+            <img src="1.jpeg" alt="True Love" class="final-image">
+            <br>
+            <button id="nextToVideoBtn"><i class="fas fa-video" style="margin-right: 8px;"></i> View Message</button>
+        </div>
+
+        <div id="finalStep2" class="hidden">
+            <video id="finalVideoPlayer" src="1.mp4" controls autoplay class="final-video"></video>
+            <br>
+            <button id="nextToBookBtn"><i class="fas fa-book" style="margin-right: 8px;"></i> See Your Future</button>
+        </div>
+
+        <button id="playAgainBtn" class="hidden"><i class="fas fa-play" style="margin-right: 8px;"></i> Play Again</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const playBtn = document.getElementById("playBtn");
+    const game = document.getElementById("game");
+    const cardContainer = document.getElementById("cardContainer");
+    const result = document.getElementById("result");
+    const resultText = document.getElementById("resultText");
+    const retryBtn = document.getElementById("retryBtn");
+    const final = document.getElementById("final");
+    const wrongImg = document.getElementById("wrongImg");
+    const progressBar = document.getElementById("progressBar");
+    const attemptCounter = document.getElementById("attemptCounter");
+    const playAgainBtn = document.getElementById("playAgainBtn");
+    const startScreen = document.getElementById("startScreen");
+    const shuffleIndicator = document.getElementById("shuffleIndicator");
+    
+    // New Final Screen Elements
+    const finalStep1 = document.getElementById("finalStep1");
+    const finalStep2 = document.getElementById("finalStep2");
+    const nextToVideoBtn = document.getElementById("nextToVideoBtn");
+    const nextToBookBtn = document.getElementById("nextToBookBtn");
+    const finalVideoPlayer = document.getElementById("finalVideoPlayer");
+
+    const images = ["1.jpeg", "2.jpeg", "3.jpeg"];
+    const correctImg = "1.jpeg";
+    let attempts = 0;
+
+    function loadCards() {
+      cardContainer.innerHTML = "";
+      const shuffledImages = [...images].sort(() => Math.random() - 0.5); 
+      shuffledImages.forEach((img) => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.dataset.img = img;
+        card.innerHTML = `
+          <div class="card-inner">
+            <div class="card-front"><i class="fas fa-heart"></i><span>Love?</span></div>
+            <div class="card-back"><img src="${img}" alt="Potential love"></div>
+          </div>`;
+        cardContainer.appendChild(card);
+      });
+    }
+
+    /**
+     * Smooth, non-overlapping card shuffling animation.
+     */
+    function startShuffle() {
+      document.querySelectorAll(".card").forEach(card => {
+          card.classList.remove('tada', 'shake');
+          if (card.listener) card.removeEventListener("click", card.listener);
+      });
+      let cards = [...document.querySelectorAll(".card")];
+      cards.forEach(card => card.classList.add("flipped"));
+      shuffleIndicator.style.opacity = "1";
+      cardContainer.style.pointerEvents = "none"; 
+
+      let shuffleCount = (attempts < 2) ? 8 : 4; 
+      let transitionDuration = 600; 
+      let intervalTime = (attempts < 2) ? 600 : 900; 
+      
+      setTimeout(() => {
+        cards.forEach(card => card.classList.remove("flipped"));
+        setTimeout(performShuffle, 500); 
+      }, 800);
+
+      const animateSwap = (cardA, cardB, callback) => {
+          const rectA = cardA.getBoundingClientRect();
+          const rectB = cardB.getBoundingClientRect();
+          const dx = rectB.left - rectA.left;
+          const dy = rectB.top - rectA.top;
+
+          [cardA, cardB].forEach(card => {
+              card.style.transition = `transform ${transitionDuration}ms ease-in-out`;
+          });
+
+          cardA.style.transform = `translate(${dx}px, ${dy}px)`;
+          cardB.style.transform = `translate(${-dx}px, ${-dy}px)`;
+
+          cardA.addEventListener('transitionend', function handler() {
+              cardA.removeEventListener('transitionend', handler);
+
+              cardA.style.transform = "";
+              cardB.style.transform = "";
+              cardA.style.transition = "";
+              cardB.style.transition = "";
+
+              const parent = cardContainer;
+              const temp = document.createElement('div');
+              parent.insertBefore(temp, cardA);
+              parent.insertBefore(cardA, cardB);
+              parent.insertBefore(cardB, temp);
+              parent.removeChild(temp);
+
+              cards = [...document.querySelectorAll(".card")];
+              callback(); 
+          }, { once: true });
+      };
+
+      function performShuffle() {
+          let i = 0;
+          shuffleIndicator.textContent = "Shuffling cards...";
+          
+          const shuffleStep = () => {
+              if (i >= shuffleCount) {
+                  shuffleIndicator.textContent = "Choose your true love!";
+                  cardContainer.style.pointerEvents = "auto";
+                  setTimeout(() => {
+                      shuffleIndicator.style.opacity = "0";
+                      setTimeout(() => { shuffleIndicator.textContent = "Shuffling cards..."; }, 1000);
+                  }, 2000);
+                  enableGuess();
+                  return;
+              }
+
+              let a = Math.floor(Math.random() * cards.length);
+              let b = Math.floor(Math.random() * cards.length);
+              while (a === b) b = Math.floor(Math.random() * cards.length);
+
+              const cardA = cards[a];
+              const cardB = cards[b];
+
+              animateSwap(cardA, cardB, () => {
+                  i++;
+                  setTimeout(shuffleStep, intervalTime - transitionDuration); 
+              });
+          };
+
+          shuffleStep();
+      }
+    }
+
+    function enableGuess() {
+      document.querySelectorAll(".card").forEach(card => {
+        const clickHandler = () => handleChoice(card.dataset.img);
+        card.listener = clickHandler; 
+        card.addEventListener("click", clickHandler, { once: true });
+      });
+    }
+
+    function handleChoice(chosen) {
+      attempts++;
+      progressBar.style.width = `${(attempts / 3) * 100}%`;
+      attemptCounter.textContent = `Attempts: ${attempts}`;
+
+      document.querySelectorAll(".card").forEach(card => {
+        card.removeEventListener("click", card.listener); 
+        if (card.dataset.img === chosen) {
+             card.classList.add('tada');
+             card.classList.add("flipped"); 
+        } else {
+             card.classList.add('shake');
+        }
+      });
+
+      setTimeout(() => {
+        game.classList.add("hidden");
+        
+        const isCorrectChoice = chosen === correctImg;
+        const canWin = attempts >= 3;
+
+        if (isCorrectChoice && canWin) {
+            // SUCCESS
+            result.classList.add("hidden");
+            final.classList.remove("hidden");
+            createConfetti();
+            
+            showFinalScreen(1); 
+        } else {
+            // FAILURE or FORCED FAILURE
+            result.classList.remove("hidden");
+            retryBtn.classList.remove("hidden");
+            wrongImg.classList.remove("hidden");
+
+            let imageToShowOnResultScreen = chosen;
+            
+            if (isCorrectChoice && !canWin) {
+                // FORCED FAILURE LOGIC
+                resultText.textContent = "You're getting warmer! Try again, your true love is close! 🔥";
+                const wrongOptions = images.filter(img => img !== correctImg);
+                const randomIndex = Math.floor(Math.random() * wrongOptions.length);
+                imageToShowOnResultScreen = wrongOptions[randomIndex]; 
+
+            } else {
+                // GENUINE FAILURE
+                resultText.textContent = "Not your true love, keep searching! 💕";
+                imageToShowOnResultScreen = chosen; 
+            }
+
+            wrongImg.src = imageToShowOnResultScreen; 
+        }
+      }, 1000);
+    }
+
+    /**
+     * Controls the sequence of reveals on the final screen.
+     */
+    function showFinalScreen(step) {
+        // Reset steps first
+        finalStep1.classList.add("hidden");
+        finalStep2.classList.add("hidden");
+        playAgainBtn.classList.add("hidden");
+
+        if (step === 1) {
+            // SHOW IMAGE (STEP 1)
+            finalStep1.classList.remove("hidden");
+            finalVideoPlayer.pause(); 
+            finalVideoPlayer.currentTime = 0; 
+        } else if (step === 2) {
+            // SHOW VIDEO (STEP 2)
+            finalStep2.classList.remove("hidden");
+            finalVideoPlayer.play(); 
+        } 
+    }
+
+    // --- Event Listeners for Game Flow ---
+    
+    playBtn.addEventListener("click", () => { startScreen.classList.add("hidden"); game.classList.remove("hidden"); loadCards(); startShuffle(); });
+    
+    retryBtn.addEventListener("click", () => { 
+      wrongImg.classList.add("hidden"); 
+      retryBtn.classList.add("hidden"); 
+      result.classList.add("hidden"); 
+      game.classList.remove("hidden"); 
+      loadCards(); 
+      startShuffle(); 
+    });
+    
+    // --- Final Screen Listeners ---
+    
+    nextToVideoBtn.addEventListener("click", () => {
+        showFinalScreen(2); 
+    });
+
+    nextToBookBtn.addEventListener("click", () => {
+        // Direct the user to book.html in the same folder
+        window.location.href = "book.html"; 
+    });
+
+    playAgainBtn.addEventListener("click", () => { 
+      // This is now redundant but kept for full reset logic
+      final.classList.add("hidden"); 
+      game.classList.remove("hidden"); 
+      attempts = 0; 
+      progressBar.style.width = "0%"; 
+      attemptCounter.textContent = "Attempts: 0"; 
+      loadCards(); 
+      startShuffle(); 
+    });
+
+    // --- Background/Aesthetic Functions ---
+
+    function createRomanticElement() {
+      const el = document.createElement("div");
+      el.className = "floating-element";
+      el.style.left = Math.random() * 100 + "vw";
+      el.style.fontSize = (Math.random() * 20 + 15) + "px";
+      el.style.animationDuration = (Math.random() * 5 + 5) + "s";
+      const emojis = ["💖", "💕", "🌸", "💘", "💝", "🌹"];
+      el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      el.style.color = ["#e84393","#fd79a8","#ffb6c1","#c44569","#ff9ff3"][Math.floor(Math.random()*5)];
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 10000);
+    }
+    setInterval(createRomanticElement, 500);
+
+    function createConfetti() {
+      for (let i = 0; i < 150; i++) {
+        setTimeout(() => {
+          const c = document.createElement("div");
+          c.className = "confetti";
+          c.style.left = Math.random() * 100 + "vw";
+          c.style.backgroundColor = ["#e84393","#fd79a8","#ffb6c1","#c44569","#ff9ff3"][Math.floor(Math.random()*5)];
+          c.style.width = Math.random() * 10 + 5 + "px";
+          c.style.height = Math.random() * 10 + 5 + "px";
+          c.style.animationDuration = Math.random() * 3 + 2 + "s";
+          document.body.appendChild(c);
+          setTimeout(() => c.remove(), 5000);
+        }, i * 30);
+      }
+    }
+  </script>
+</body>
+</html>
