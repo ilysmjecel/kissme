@@ -259,8 +259,6 @@
       .bg-video video{object-position:50% 20%;}
       .falling-image-container { 
         width: 110px; 
-        left: 5% !important;
-        right: 5% !important;
       }
       .falling-image { 
         width: 85px; 
@@ -580,14 +578,15 @@ Asawa mo Jess <3`;
     const container = document.createElement('div');
     container.className = 'falling-image-container';
     
-    // FIXED: Better positioning to prevent overlapping
+    // FIXED: Better positioning to prevent overlapping and ensure random positions
     const isMobile = window.innerWidth <= 640;
     let leftPos;
     
     // Generate a position that's not too close to existing falling images
     let attempts = 0;
     do {
-      leftPos = isMobile ? 5 + Math.random() * 90 : 5 + Math.random() * 90;
+      // Use the same range for both mobile and desktop
+      leftPos = 10 + Math.random() * 80; // 10% to 90% for safe margins
       attempts++;
     } while (isPositionTooClose(leftPos) && attempts < 10);
     
