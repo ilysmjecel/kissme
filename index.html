@@ -1,0 +1,582 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>For My Love — Happy Monthsary</title>
+  <meta name="description" content="A cute pink monthsary interactive gift page." />
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <!-- Optional: GSAP for smoother animations & canvas-confetti -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js" defer></script>
+  <style>
+    :root{
+      --pink-1:#FFB7D5; --pink-2:#FF7BAC; --bg:#FFF7FB; --text:#2F2F2F; --gold:#FFD97D;
+      --glass: rgba(255,255,255,0.55);
+      --radius:20px;
+    }
+    html,body{height:100%;margin:0;font-family:Poppins,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial; background:var(--bg); color:var(--text);}
+    .wrap{position:relative;min-height:100vh;overflow:hidden;display:none;}
+    
+    /* Initial Screen */
+    .initial-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, var(--pink-1), var(--pink-2));
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      color: white;
+      text-align: center;
+      padding: 2rem;
+    }
+    
+    .initial-question {
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      margin-bottom: 2rem;
+      text-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    
+    .initial-buttons {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+    
+    .initial-btn {
+      background: white;
+      border: none;
+      color: var(--pink-2);
+      padding: 0.8rem 2rem;
+      border-radius: 999px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 1.1rem;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .initial-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 22px rgba(0,0,0,0.15);
+    }
+    
+    .initial-btn:active {
+      transform: translateY(1px);
+    }
+    
+    .sad-message {
+      font-size: 4rem;
+      margin-top: 2rem;
+      animation: fadeIn 1s;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Video background */
+    .bg-video{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;align-items:center;justify-content:center;}
+    .bg-video video{width:100vw;height:100vh;object-fit:cover;object-position:center;filter:contrast(1.02) saturate(1.05);}
+    /* Overlay for better contrast */
+    .overlay{position:fixed;inset:0;background:linear-gradient(180deg, rgba(255,245,249,0.15), rgba(255,245,249,0.25));backdrop-filter: blur(2px);z-index:1;pointer-events:none}
+
+    /* Page content */
+    .content{position:relative;z-index:10;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;gap:1rem}
+    .badge{position:absolute;left:1rem;top:1rem;background:linear-gradient(90deg,var(--pink-1),var(--pink-2));padding:.5rem 1rem;border-radius:999px;color:white;font-weight:600;box-shadow:0 6px 18px rgba(255,123,172,0.18);transform-origin:left;}
+    h1{font-family:'Dancing Script',cursive;font-size:clamp(2.2rem,4.5vw,4rem);margin:.2rem;text-align:center;color:var(--pink-2);text-shadow:0 6px 20px rgba(255,123,172,0.08)}
+    p.subtitle{margin:0;text-align:center;font-size:1.05rem;color:white}
+
+    /* Book styling */
+    .book-container {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      z-index: 30;
+      width: 90%;
+      max-width: 600px;
+      height: 70vh;
+      perspective: 2000px;
+    }
+    
+    .book {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 1.5s ease-in-out;
+    }
+    
+    .book-page {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,245,249,0.85));
+      border-radius: 12px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+      padding: 2rem;
+      box-sizing: border-box;
+      backface-visibility: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    
+    .book-page.front {
+      background: linear-gradient(135deg, var(--pink-1), var(--pink-2));
+      color: white;
+      z-index: 2;
+    }
+    
+    .book-page.back {
+      background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,245,249,0.9));
+      transform: rotateY(180deg);
+    }
+    
+    .book.open {
+      transform: rotateY(-180deg);
+    }
+    
+    .book-message {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      max-height: 100%;
+      overflow-y: auto;
+      padding: 1rem;
+    }
+    
+    .next-btn {
+      margin-top: 1.5rem;
+      background: linear-gradient(90deg, var(--pink-1), var(--pink-2));
+      border: none;
+      color: white;
+      padding: 0.8rem 2rem;
+      border-radius: 999px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(255,123,172,0.25);
+    }
+
+    /* Open button -> gift box container */
+    .open-row{position:fixed;left:50%;transform:translateX(-50%);bottom:26px;z-index:20}
+    .open-btn{appearance:none;border:0;background:linear-gradient(90deg,var(--pink-1),var(--pink-2));color:white;padding:.85rem 2.4rem;border-radius:999px;font-weight:700;cursor:pointer;font-size:1.05rem;box-shadow:0 8px 30px rgba(255,123,172,0.18);display:inline-flex;align-items:center;gap:.6rem}
+    .open-btn:active{transform:translateY(1px) scale(.995)}
+
+    /* message card hidden by default */
+    .message-card{opacity:0;transform:translateY(24px);transition:all .4s cubic-bezier(.2,.9,.2,1);}
+    .message-text{white-space:pre-wrap;font-size:1.05rem;line-height:1.6;color:var(--text)}
+    .highlight{display:inline-block;padding:0 .15rem;border-radius:6px}
+    .sparkle{animation:glow 2s ease-in-out infinite}
+    @keyframes glow{0%{text-shadow:0 0 0 rgba(255,217,125,0)}50%{text-shadow:0 6px 18px rgba(255,217,125,0.45)}100%{text-shadow:0 0 0 rgba(255,217,125,0)}}
+
+    /* floating hearts / petals layer */
+    .float-layer{pointer-events:none;position:fixed;inset:0;z-index:15}
+
+    /* falling image style - FIXED animation */
+    .falling-image-container {
+      position: fixed;
+      top: -240px;
+      width: 140px;
+      z-index: 25;
+      animation: fall-down 15s linear forwards;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .falling-image {
+      width: 110px;
+      height: 110px;
+      border-radius: 12px;
+      object-fit: cover;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      backdrop-filter: blur(2px);
+    }
+    
+    .image-message {
+      margin-top: 8px;
+      padding: 6px 10px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.9);
+      font-weight: 600;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.08);
+      font-size: 0.85rem;
+      text-align: center;
+      max-width: 120px;
+    }
+    
+    @keyframes fall-down {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      90% {
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* replay button */
+    .replay{margin-top:.75rem;background:transparent;border:2px solid var(--pink-2);color:var(--pink-2);padding:.5rem 1rem;border-radius:999px;cursor:pointer}
+
+    /* small controls */
+    .controls{position:fixed;right:1rem;bottom:1rem;z-index:25;display:flex;gap:.5rem}
+    .ctrl-btn{background:rgba(255,255,255,0.6);border-radius:10px;padding:.45rem;backdrop-filter: blur(4px);border:0;cursor:pointer}
+
+    /* accessibility focus */
+    button:focus{outline:3px solid rgba(255,123,172,0.18);outline-offset:3px}
+
+    /* responsive video framing for mobile — re-center vertical to show 9:16 important area */
+    @media (max-width:640px){
+      .bg-video video{object-position:50% 20%;}
+      .falling-image-container { width: 120px; }
+      .falling-image { width: 92px; height: 92px; }
+      .image-message { font-size: 0.8rem; max-width: 100px; }
+      .book-container {
+        width: 95%;
+        height: 60vh;
+      }
+      .book-message {
+        font-size: 1rem;
+        padding: 0.5rem;
+      }
+      .initial-buttons {
+        flex-direction: column;
+        gap: 1rem;
+      }
+    }
+
+    /* reduced motion */
+    @media (prefers-reduced-motion: reduce){
+      .open-btn, .message-card, .falling-image-container, .float-layer, .book, .next-btn{transition:none;animation:none}
+    }
+  </style>
+</head>
+<body>
+  <!-- Initial Screen -->
+  <div class="initial-screen" id="initialScreen">
+    <h2 class="initial-question">Sorry late 🥺</h2>
+    <div class="initial-buttons">
+      <button class="initial-btn" id="yesBtn">Accept</button>
+      <button class="initial-btn" id="noBtn">Reject</button>
+    </div>
+    <div class="sad-message" id="sadMessage" style="display: none;">:<</div>
+  </div>
+
+  <div class="wrap" role="application" id="mainWrap">
+    <div class="bg-video" aria-hidden="true">
+      <video id="bgvid" autoplay playsinline loop preload="auto" poster="poster.jpg">
+        <source src="video.mp4" type="video/mp4">
+        <!-- captions placeholder -->
+      </video>
+    </div>
+    <div class="overlay"></div>
+
+    <div class="content" id="mainContent">
+      <div class="badge" id="badge">6 Months</div>
+      <h1 id="title">For My Wife</h1>
+      <p class="subtitle">Princess Jecel R. Hernandez</p>
+    </div>
+
+    <div class="open-row" id="openRow">
+      <button id="openBtn" class="open-btn" aria-expanded="false">OPEN</button>
+    </div>
+
+    <!-- Book Container -->
+    <div class="book-container" id="bookContainer">
+      <div class="book" id="book">
+        <div class="book-page front">
+          <h2 style="font-family: 'Dancing Script', cursive; font-size: 2.5rem;">Happy Monthsarry My Princess</h2>
+          <p>I Wavvv Youu Sooo Muchhh</p>
+        </div>
+        <div class="book-page back">
+          <div class="book-message" id="bookMessage"></div>
+          <button class="next-btn" id="nextBtn">SECRET</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls" aria-hidden="false">
+      <button class="ctrl-btn" id="muteBtn" aria-pressed="false" title="Unmute / Mute">🔊</button>
+    </div>
+
+    <div class="float-layer" id="floatLayer"></div>
+
+  </div>
+
+  <script>
+  // ---------- Initial Screen Logic ----------
+  const initialScreen = document.getElementById('initialScreen');
+  const yesBtn = document.getElementById('yesBtn');
+  const noBtn = document.getElementById('noBtn');
+  const sadMessage = document.getElementById('sadMessage');
+  const mainWrap = document.getElementById('mainWrap');
+
+  yesBtn.addEventListener('click', () => {
+    // Hide initial screen and show main content
+    initialScreen.style.display = 'none';
+    mainWrap.style.display = 'block';
+    
+    // Try to autoplay video with sound
+    tryAutoplaySound();
+  });
+
+  noBtn.addEventListener('click', () => {
+    // Hide buttons and show sad message
+    document.querySelector('.initial-buttons').style.display = 'none';
+    sadMessage.style.display = 'block';
+    
+    // Reset after 3 seconds
+    setTimeout(() => {
+      sadMessage.style.display = 'none';
+      document.querySelector('.initial-buttons').style.display = 'flex';
+    }, 3000);
+  });
+
+  // ---------- Configuration / placeholders ----------
+  const PLACEHOLDER_MESSAGE = `My dearest Princess Jecel,
+
+Happy 6th monthsary, my love! 
+I dont know where to start Nyahahahhahaha, Never been so inlove talaga talaga. Halerr my one and only babyyy. I love you so muchhh my wifeyyy, And I will continue to do so til my last breath on earth.
+
+I'm so glad and thankful na ikaw mapapangasawa ko. Mwehafhdsjklgdflgghdf damn a cute and beautiful perfect wife. So lucky ko naman, Thank youuu and sorry, sometimes I hurt without even realizing it. Kaya minsan napapaisip ako na I'm a bad BF huhuhu, like you deserve a better partner pero uhh.
+
+Diko kaya... arghhh akin kalang boi. Sa hirap at ginhawa tayo ay mag sasama. Wala kanang magagawa!, I will tali you talaga If it comes down to it. (im serious btw)
+
+Bilis ng panahon mahal noh! 6 months na agad tayo, damn. Malayo na pero malayo pa Mwehihihihi, laban lang us mahal ha! walang susuko please :<. I'm gonna marry you someday pa... I loveee you so muchhhh talaga talaga! I wish you the best mylove.
+
+Forever yours,
+Asawa mo Jess <3`;
+
+  const IMAGE_COUNT = 10; // image1.jpeg ... image10.jpeg
+  const IMAGE_MESSAGES = [
+    "My sweet little baby.",
+    "My heart only belongs to you.",
+    "Bembang.",
+    "Cutie naman nyan.",
+    "I love you so much.",
+    "My babyyy.",
+    "So pretty.",
+    "My one and only.",
+    "You're so beautiful.",
+    "Thank you mylove."
+  ];
+  const TYPE_SPEED = 28; // ms per character
+
+  // ---------- Elements ----------
+  const bgvid = document.getElementById('bgvid');
+  const openBtn = document.getElementById('openBtn');
+  const bookContainer = document.getElementById('bookContainer');
+  const book = document.getElementById('book');
+  const bookMessage = document.getElementById('bookMessage');
+  const nextBtn = document.getElementById('nextBtn');
+  const muteBtn = document.getElementById('muteBtn');
+  const floatLayer = document.getElementById('floatLayer');
+
+  // ---------- Utility ----------
+  function wait(ms){return new Promise(r=>setTimeout(r,ms))}
+
+  // Try to autoplay with sound — browsers commonly block sound on autoplay. If blocked, keep muted and show hint.
+  async function tryAutoplaySound(){
+    try{
+      // Start with audio unmuted by default
+      bgvid.muted = false;
+      await bgvid.play();
+      
+      // Update mute button based on actual state
+      if(!bgvid.muted){
+        muteBtn.textContent = '🔊';
+        muteBtn.setAttribute('aria-pressed','false');
+      } else {
+        muteBtn.textContent = '🔇';
+        muteBtn.setAttribute('aria-pressed','true');
+      }
+    }catch(e){
+      // can't autoplay with sound — keep unmuted but show subtle overlay instruction
+      bgvid.muted = true;
+      muteBtn.textContent = '🔇';
+      muteBtn.setAttribute('aria-pressed','true');
+      // show small toast (simple) — clicking anywhere will unmute
+      const hint = document.createElement('div');
+      hint.textContent = 'Tap anywhere to hear the audio';
+      Object.assign(hint.style,{position:'fixed',left:'50%',transform:'translateX(-50%)',bottom:'110px',background:'rgba(255,255,255,0.9)',padding:'8px 12px',borderRadius:'999px',zIndex:40,fontWeight:600});
+      document.body.appendChild(hint);
+      function removeHint(){ if(hint.parentNode) hint.parentNode.removeChild(hint); window.removeEventListener('pointerdown',onTap)}
+      function onTap(){bgvid.muted=false; muteBtn.textContent='🔊'; muteBtn.setAttribute('aria-pressed','false'); removeHint();}
+      window.addEventListener('pointerdown', onTap,{once:true});
+      setTimeout(()=>removeHint(),8000);
+    }
+  }
+
+  // mute toggle
+  muteBtn.addEventListener('click',()=>{
+    bgvid.muted = !bgvid.muted;
+    muteBtn.textContent = bgvid.muted ? '🔇' : '🔊';
+    muteBtn.setAttribute('aria-pressed', String(bgvid.muted));
+  });
+
+  // typewriter effect
+  async function typeWriter(text, container){
+    container.textContent='';
+    for(let i=0;i<text.length;i++){
+      container.textContent += text[i];
+      await wait(TYPE_SPEED);
+    }
+  }
+
+  // Book opening animation
+  async function openBook(){
+    openBtn.setAttribute('aria-expanded','true');
+    
+    // Show book container with animation
+    if(window.gsap){
+      gsap.to(bookContainer, {duration: 0.8, scale: 1, ease: 'back.out(1.7)'});
+    } else {
+      bookContainer.style.transform = 'translate(-50%, -50%) scale(1)';
+      bookContainer.style.transition = 'transform 0.8s ease';
+    }
+    
+    await wait(1000);
+    
+    // Open book
+    book.classList.add('open');
+    
+    await wait(1500);
+    
+    // Type the message
+    await typeWriter(PLACEHOLDER_MESSAGE, bookMessage);
+    
+    // Show next button
+    nextBtn.style.opacity = '1';
+  }
+
+  openBtn.addEventListener('click', async ()=>{
+    if(document.body.matches('[data-animating]')) return;
+    document.body.setAttribute('data-animating','1');
+    await openBook();
+    document.body.removeAttribute('data-animating');
+  });
+
+  // Next button to start falling images
+  nextBtn.addEventListener('click', ()=>{
+    // Hide book
+    if(window.gsap){
+      gsap.to(bookContainer, {duration: 0.5, scale: 0, ease: 'power2.in'});
+    } else {
+      bookContainer.style.transform = 'translate(-50%, -50%) scale(0)';
+    }
+    
+    // Start falling images
+    startFallingImages();
+  });
+
+  // Floating hearts creation
+  function createFloatingHearts(count=12){
+    for(let i=0;i<count;i++){
+      const el=document.createElement('div');
+      el.innerHTML='❤';
+      Object.assign(el.style,{position:'fixed',left:(10 + Math.random()*80)+'%',top:(10 + Math.random()*20)+'%',fontSize:(12+Math.random()*24)+'px',opacity:0.9,zIndex:22,transform:`translateY(${Math.random()*20}px) rotate(${Math.random()*360}deg)`});
+      floatLayer.appendChild(el);
+      // animate up and fade
+      if(window.gsap){
+        gsap.to(el,{y:-180,opacity:0,duration:3+Math.random()*2,ease:'power1.out',onComplete:()=>el.remove()});
+      } else {
+        el.animate([{transform:'translateY(0)'},{transform:'translateY(-180px)',opacity:0}],{duration:3000+Math.random()*1500,fill:'forwards',easing:'ease-out'}).onfinish=()=>el.remove();
+      }
+    }
+  }
+
+  // Falling images sequence - one or two at a time
+  let fallingEls = [];
+  let currentFallingCount = 0;
+  let maxFallingAtOnce = 2;
+  
+  function startFallingImages(){
+    // Create falling images with messages - one or two at a time
+    for(let i=0; i < IMAGE_COUNT; i++){
+      setTimeout(() => {
+        spawnFallingImage(i+1, IMAGE_MESSAGES[i % IMAGE_MESSAGES.length]);
+      }, i * 3000); // Stagger the creation more
+    }
+    
+    // Add some floating hearts
+    createFloatingHearts(15);
+  }
+
+  function spawnFallingImage(n, msg){
+    if (currentFallingCount >= maxFallingAtOnce) {
+      // Try again in a moment if we already have max falling
+      setTimeout(() => spawnFallingImage(n, msg), 1000);
+      return;
+    }
+    
+    currentFallingCount++;
+    
+    const container = document.createElement('div');
+    container.className = 'falling-image-container';
+    container.style.left = `${5 + Math.random()*90}%`;
+    // Randomize animation duration for more natural look
+    container.style.animationDuration = `${12 + Math.random() * 6}s`;
+
+    const img = document.createElement('img');
+    img.src = `image${n}.jpeg`;
+    img.className = 'falling-image';
+    container.appendChild(img);
+
+    const msgEl = document.createElement('div');
+    msgEl.className = 'image-message';
+    msgEl.textContent = msg;
+    container.appendChild(msgEl);
+
+    document.body.appendChild(container);
+    fallingEls.push(container);
+
+    // Remove elements after animation completes
+    setTimeout(() => {
+      if(container.parentNode) container.parentNode.removeChild(container);
+      currentFallingCount--;
+      // Remove from array
+      const index = fallingEls.indexOf(container);
+      if (index > -1) {
+        fallingEls.splice(index, 1);
+      }
+    }, 16000); // Slightly longer than animation duration
+  }
+
+  // simple shuffle util
+  function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a }
+
+  // simple reset when page resized to avoid stuck elements
+  window.addEventListener('resize', ()=>{fallingEls.forEach(e=>e.remove()); fallingEls=[]; currentFallingCount=0});
+
+  // keyboard: ESC closes things or restarts
+  window.addEventListener('keydown',(e)=>{
+    if(e.key==='Escape'){
+      fallingEls.forEach(e=>e.remove()); fallingEls=[]; currentFallingCount=0;
+      bookContainer.style.transform = 'translate(-50%, -50%) scale(0)';
+      book.classList.remove('open');
+      openBtn.style.visibility='visible';
+    }
+  });
+
+  </script>
+</body>
+</html>
