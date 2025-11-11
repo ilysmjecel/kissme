@@ -548,16 +548,20 @@ Asawa mo Jess <3`;
     }
   }
 
-  // Falling images sequence - continuous flow, one at a time
+  // Falling images sequence - one by one with random order and timing
   let fallingEls = [];
   
   function startFallingImages(){
-    // Create falling images with messages - one at a time
-    for(let i=0; i < IMAGE_COUNT; i++){
+    // Create a shuffled array of indices
+    const shuffledIndices = shuffle(Array.from({length: IMAGE_COUNT}, (_, i) => i));
+    
+    // Create falling images one by one with random delays
+    shuffledIndices.forEach((index, i) => {
+      const delay = i * 2500 + Math.random() * 1000; // 2.5-3.5 seconds between images
       setTimeout(() => {
-        spawnFallingImage(i+1, IMAGE_MESSAGES[i % IMAGE_MESSAGES.length]);
-      }, i * 2000); // New image every 2 seconds
-    }
+        spawnFallingImage(index + 1, IMAGE_MESSAGES[index]);
+      }, delay);
+    });
     
     // Add some floating hearts
     createFloatingHearts(15);
@@ -567,8 +571,11 @@ Asawa mo Jess <3`;
     const container = document.createElement('div');
     container.className = 'falling-image-container';
     
-    // Random position
-    const leftPos = 10 + Math.random() * 80; // 10% to 90% for safe margins
+    // Random position with safe margins for mobile
+    const isMobile = window.innerWidth <= 640;
+    const safeMargin = isMobile ? 15 : 10;
+    const leftPos = safeMargin + Math.random() * (100 - safeMargin * 2);
+    
     container.style.left = `${leftPos}%`;
     
     // Randomize animation duration for more natural look
