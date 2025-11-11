@@ -548,23 +548,31 @@ Asawa mo Jess <3`;
     }
   }
 
-  // Falling images sequence - one by one with random order and timing
+  // Falling images sequence - ONE BY ONE with perfect timing
   let fallingEls = [];
+  let currentImageIndex = 0;
   
   function startFallingImages(){
-    // Create a shuffled array of indices
-    const shuffledIndices = shuffle(Array.from({length: IMAGE_COUNT}, (_, i) => i));
-    
-    // Create falling images one by one with random delays
-    shuffledIndices.forEach((index, i) => {
-      const delay = i * 2500 + Math.random() * 1000; // 2.5-3.5 seconds between images
-      setTimeout(() => {
-        spawnFallingImage(index + 1, IMAGE_MESSAGES[index]);
-      }, delay);
-    });
+    // Start the sequence with the first image
+    spawnNextImage();
     
     // Add some floating hearts
     createFloatingHearts(15);
+  }
+
+  function spawnNextImage() {
+    if (currentImageIndex >= IMAGE_COUNT) return;
+    
+    const imageNumber = currentImageIndex + 1;
+    const message = IMAGE_MESSAGES[currentImageIndex % IMAGE_MESSAGES.length];
+    
+    spawnFallingImage(imageNumber, message);
+    currentImageIndex++;
+    
+    // Schedule next image to appear when current one is halfway through fading
+    setTimeout(() => {
+      spawnNextImage();
+    }, 8000); // Start next image 8 seconds after current one (when it's starting to fade out)
   }
 
   function spawnFallingImage(n, msg){
@@ -578,8 +586,9 @@ Asawa mo Jess <3`;
     
     container.style.left = `${leftPos}%`;
     
-    // Randomize animation duration for more natural look
-    container.style.animationDuration = `${12 + Math.random() * 6}s`;
+    // Randomize animation duration slightly for more natural look
+    const duration = 14 + Math.random() * 2; // 14-16 seconds
+    container.style.animationDuration = `${duration}s`;
 
     const img = document.createElement('img');
     img.src = `image${n}.jpeg`;
@@ -604,19 +613,20 @@ Asawa mo Jess <3`;
       if (index > -1) {
         fallingEls.splice(index, 1);
       }
-    }, 16000); // Slightly longer than animation duration
+    }, duration * 1000 + 1000); // Remove slightly after animation ends
   }
 
   // simple shuffle util
   function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a }
 
   // simple reset when page resized to avoid stuck elements
-  window.addEventListener('resize', ()=>{fallingEls.forEach(e=>e.remove()); fallingEls=[];});
+  window.addEventListener('resize', ()=>{fallingEls.forEach(e=>e.remove()); fallingEls=[]; currentImageIndex = 0;});
 
   // keyboard: ESC closes things or restarts
   window.addEventListener('keydown',(e)=>{
     if(e.key==='Escape'){
       fallingEls.forEach(e=>e.remove()); fallingEls=[];
+      currentImageIndex = 0;
       bookContainer.style.transform = 'translate(-50%, -50%) scale(0)';
       book.classList.remove('open');
       openBtn.style.visibility='visible';
