@@ -35,6 +35,7 @@
       color: white;
       text-align: center;
       padding: 2rem;
+      box-sizing: border-box;
     }
     
     .initial-question {
@@ -48,19 +49,25 @@
       display: flex;
       gap: 1.5rem;
       margin-top: 1rem;
+      width: 100%;
+      max-width: 400px;
+      justify-content: center;
     }
     
     .initial-btn {
       background: white;
       border: none;
       color: var(--pink-2);
-      padding: 0.8rem 2rem;
+      padding: 1rem 2rem;
       border-radius: 999px;
       font-weight: 600;
       cursor: pointer;
       font-size: 1.1rem;
       box-shadow: 0 6px 18px rgba(0,0,0,0.1);
       transition: transform 0.2s, box-shadow 0.2s;
+      flex: 1;
+      min-width: 140px;
+      max-width: 180px;
     }
     
     .initial-btn:hover {
@@ -251,18 +258,18 @@
     @media (max-width:640px){
       .bg-video video{object-position:50% 20%;}
       .falling-image-container { 
-        width: 120px; 
-        left: 10% !important; /* Fixed: Ensure images are positioned safely */
-        right: 10% !important;
-        margin: 0 auto;
+        width: 110px; 
+        left: 5% !important;
+        right: 5% !important;
       }
       .falling-image { 
-        width: 92px; 
-        height: 92px; 
+        width: 85px; 
+        height: 85px; 
       }
       .image-message { 
-        font-size: 0.8rem; 
-        max-width: 100px; 
+        font-size: 0.75rem; 
+        max-width: 90px; 
+        padding: 4px 8px;
       }
       .book-container {
         width: 95%;
@@ -272,16 +279,32 @@
         font-size: 1rem;
         padding: 0.5rem;
       }
-      /* Fixed: Make initial buttons stack vertically on mobile */
+      /* Fixed: Make initial buttons stack vertically on mobile with better sizing */
       .initial-buttons {
         flex-direction: column;
         gap: 1rem;
-        width: 80%;
-        max-width: 300px;
+        width: 90%;
+        max-width: 280px;
       }
       .initial-btn {
         width: 100%;
-        padding: 1rem 2rem;
+        padding: 1.2rem 1.5rem;
+        font-size: 1.2rem;
+        max-width: none;
+      }
+      .initial-question {
+        margin-bottom: 1.5rem;
+      }
+    }
+
+    /* For very small screens */
+    @media (max-width: 380px) {
+      .initial-buttons {
+        width: 95%;
+      }
+      .initial-btn {
+        padding: 1rem 1.2rem;
+        font-size: 1.1rem;
       }
     }
 
@@ -531,6 +554,7 @@ Asawa mo Jess <3`;
   let fallingEls = [];
   let currentFallingCount = 0;
   let maxFallingAtOnce = 2;
+  let lastPositions = [];
   
   function startFallingImages(){
     // Create falling images with messages - one or two at a time
@@ -556,14 +580,19 @@ Asawa mo Jess <3`;
     const container = document.createElement('div');
     container.className = 'falling-image-container';
     
-    // FIXED: Better positioning for mobile - ensure images are within viewport
+    // FIXED: Better positioning to prevent overlapping
     const isMobile = window.innerWidth <= 640;
-    if (isMobile) {
-      // For mobile, use more controlled positioning
-      container.style.left = `${10 + Math.random()*80}%`;
-    } else {
-      container.style.left = `${5 + Math.random()*90}%`;
-    }
+    let leftPos;
+    
+    // Generate a position that's not too close to existing falling images
+    let attempts = 0;
+    do {
+      leftPos = isMobile ? 5 + Math.random() * 90 : 5 + Math.random() * 90;
+      attempts++;
+    } while (isPositionTooClose(leftPos) && attempts < 10);
+    
+    lastPositions.push(leftPos);
+    container.style.left = `${leftPos}%`;
     
     // Randomize animation duration for more natural look
     container.style.animationDuration = `${12 + Math.random() * 6}s`;
@@ -571,6 +600,7 @@ Asawa mo Jess <3`;
     const img = document.createElement('img');
     img.src = `image${n}.jpeg`;
     img.className = 'falling-image';
+    img.alt = `Memory ${n}`;
     container.appendChild(img);
 
     const msgEl = document.createElement('div');
@@ -585,6 +615,13 @@ Asawa mo Jess <3`;
     setTimeout(() => {
       if(container.parentNode) container.parentNode.removeChild(container);
       currentFallingCount--;
+      
+      // Remove position from tracking
+      const posIndex = lastPositions.indexOf(leftPos);
+      if (posIndex > -1) {
+        lastPositions.splice(posIndex, 1);
+      }
+      
       // Remove from array
       const index = fallingEls.indexOf(container);
       if (index > -1) {
@@ -592,17 +629,27 @@ Asawa mo Jess <3`;
       }
     }, 16000); // Slightly longer than animation duration
   }
+  
+  // Helper function to check if a position is too close to existing ones
+  function isPositionTooClose(newPos) {
+    for (const pos of lastPositions) {
+      if (Math.abs(newPos - pos) < 15) { // 15% minimum distance
+        return true;
+      }
+    }
+    return false;
+  }
 
   // simple shuffle util
   function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a }
 
   // simple reset when page resized to avoid stuck elements
-  window.addEventListener('resize', ()=>{fallingEls.forEach(e=>e.remove()); fallingEls=[]; currentFallingCount=0});
+  window.addEventListener('resize', ()=>{fallingEls.forEach(e=>e.remove()); fallingEls=[]; currentFallingCount=0; lastPositions = []});
 
   // keyboard: ESC closes things or restarts
   window.addEventListener('keydown',(e)=>{
     if(e.key==='Escape'){
-      fallingEls.forEach(e=>e.remove()); fallingEls=[]; currentFallingCount=0;
+      fallingEls.forEach(e=>e.remove()); fallingEls=[]; currentFallingCount=0; lastPositions = [];
       bookContainer.style.transform = 'translate(-50%, -50%) scale(0)';
       book.classList.remove('open');
       openBtn.style.visibility='visible';
