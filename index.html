@@ -230,9 +230,11 @@
             background-color: rgba(255, 204, 213, 0.5);
             padding: 10px 20px;
             border-radius: 30px;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-            hyphens: auto;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+            display: inline-block;
         }
         
         /* Page 2 specific styles */
@@ -498,9 +500,14 @@
                 line-height: 1.5;
             }
             
+            /* Fix for the name - keep it in one line with smaller font */
             .months-counter {
-                font-size: 1.3rem;
+                font-size: 1.1rem;
                 padding: 8px 16px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 90%;
             }
             
             .page-content {
@@ -526,8 +533,10 @@
                 font-size: 1rem;
             }
             
+            /* Further reduce name font size for very small screens */
             .months-counter {
-                font-size: 1.2rem;
+                font-size: 1rem;
+                padding: 6px 12px;
             }
             
             .surprise-button {
@@ -613,7 +622,7 @@
             
             <div class="password-error" id="passwordError"></div>
             
-            <p class="password-hint">Guess the password blehh</p>
+            <p class="password-hint">Guess the password blehhh</p>
         </div>
     </div>
     
@@ -692,7 +701,7 @@
                     
                     <div class="surprise-container">
                         <p class="surprise-message">
-                            <i class="fas fa-heart"></i>
+
                             MUST READ, hihihihi click mo yung download button beh.
                             It's a Minecraft world (diko alam ano pinaggagawa ko dyan)
                             Download the world beh then punta ka sa video settings ng mc mo,
@@ -711,9 +720,9 @@
                     </div>
                     
                     <div style="margin-top: 30px; font-size: 1.1rem; color: #666;">
-                        <i class="fas fa-heart heart-icon"></i>
+
                         Happy 6th Monthsary again love
-                        <i class="fas fa-heart heart-icon"></i>
+
                     </div>
                 </div>
                 
