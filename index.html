@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>6th Monthsary</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        :root {
+            --primary: #ff6b8b;
+            --secondary: #ffccd5;
+            --accent: #ff8fab;
+            --light: #fff0f3;
+            --dark: #590d22;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            overflow-x: hidden;
+            height: 100vh;
+            position: relative;
+        }
+        
+        /* Password Screen Styles */
+        .password-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--light);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .password-container {
+            background-color: white;
+            padding: 40px 30px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(89, 13, 34, 0.2);
+            max-width: 400px;
+            width: 100%;
+            border: 3px solid var(--secondary);
+        }
+        
+        .password-title {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .password-subtitle {
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .password-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid var(--secondary);
+            border-radius: 50px;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .password-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(255, 107, 139, 0.2);
+        }
+        
+        .password-button {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        .password-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(255, 107, 139, 0.3);
+        }
+        
+        .password-button:active {
+            transform: translateY(-1px);
+        }
+        
+        .password-error {
+            color: #ff4757;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            min-height: 20px;
+        }
+        
+        .password-hint {
+            font-size: 0.8rem;
+            color: #888;
+            margin-top: 15px;
+            font-style: italic;
+        }
+        
+        /* Hidden class for password screen */
+        .hidden {
+            display: none !important;
+        }
+        
+        /* Heart background */
+        .heart-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.1;
+        }
+        
+        .heart {
+            position: absolute;
+            color: var(--primary);
+            animation: float 15s infinite linear;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); }
+            100% { transform: translateY(-100px) rotate(360deg); }
+        }
+        
+        /* Scrapbook Styles */
+        .scrapbook-container {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .pages-container {
+            display: flex;
+            width: 300vw;
+            height: 100vh;
+            transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+        }
+        
+        .page {
+            width: 100vw;
+            height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow-y: auto;
+        }
+        
+        .page-title {
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+            text-align: center;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .page-title:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: var(--accent);
+        }
+        
+        .page-content {
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            padding: 15px;
+        }
+        
+        .heart-icon {
+            color: var(--primary);
+            margin: 0 8px;
+        }
+        
+        /* Page 1 specific styles */
+        .cover-photo {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 8px solid var(--secondary);
+            margin: 20px 0;
+            box-shadow: 0 10px 25px rgba(89, 13, 34, 0.2);
+        }
+        
+        .months-counter {
+            font-size: 1.5rem;
+            margin: 15px 0;
+            color: var(--dark);
+            background-color: rgba(255, 204, 213, 0.5);
+            padding: 10px 20px;
+            border-radius: 30px;
+        }
+        
+        /* Page 2 specific styles */
+        .love-letter {
+            background-color: white;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(89, 13, 34, 0.15);
+            margin-top: 20px;
+            position: relative;
+            border-left: 8px solid var(--primary);
+        }
+        
+        .love-letter:before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 20px;
+            background-color: var(--light);
+            border-radius: 50%;
+        }
+        
+        .signature {
+            font-family: 'Brush Script MT', cursive;
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-top: 25px;
+            text-align: right;
+        }
+        
+        /* Page 3 specific styles - Must Read Page */
+        .surprise-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(89, 13, 34, 0.15);
+            margin-top: 20px;
+            position: relative;
+            border: 3px dashed var(--primary);
+        }
+        
+        .surprise-message {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        
+        .surprise-message i {
+            color: var(--primary);
+            margin: 0 5px;
+        }
+        
+        .surprise-button {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 18px 40px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(255, 107, 139, 0.3);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        
+        .surprise-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(255, 107, 139, 0.4);
+        }
+        
+        .surprise-button:active {
+            transform: translateY(-2px);
+        }
+        
+        .envelope-icon {
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        .surprise-note {
+            margin-top: 25px;
+            font-style: italic;
+            color: #666;
+            font-size: 0.9rem;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 10px;
+        }
+        
+        /* Navigation */
+        .navigation {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            z-index: 100;
+        }
+        
+        .nav-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(89, 13, 34, 0.3);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .nav-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .nav-btn.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .page-indicators {
+            display: flex;
+            position: absolute;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--secondary);
+            margin: 0 8px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .indicator.active {
+            background-color: var(--primary);
+            transform: scale(1.2);
+        }
+        
+        /* Decorative elements */
+        .sticker {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            opacity: 0.9;
+            z-index: -1;
+        }
+        
+        .sticker-1 {
+            top: 10%;
+            left: 5%;
+            transform: rotate(-15deg);
+            color: var(--accent);
+        }
+        
+        .sticker-2 {
+            bottom: 15%;
+            right: 5%;
+            transform: rotate(15deg);
+            color: var(--primary);
+        }
+        
+        .sticker-3 {
+            top: 20%;
+            right: 10%;
+            transform: rotate(10deg);
+            color: var(--accent);
+        }
+        
+        .sticker-4 {
+            bottom: 20%;
+            left: 10%;
+            transform: rotate(-10deg);
+            color: var(--primary);
+        }
+        
+        .sticker-5 {
+            top: 15%;
+            left: 10%;
+            transform: rotate(-20deg);
+            color: var(--primary);
+        }
+        
+        .sticker-6 {
+            bottom: 25%;
+            right: 8%;
+            transform: rotate(20deg);
+            color: var(--accent);
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .page-title {
+                font-size: 1.8rem;
+            }
+            
+            .love-letter {
+                padding: 20px 15px;
+            }
+            
+            .cover-photo {
+                width: 180px;
+                height: 180px;
+            }
+            
+            .surprise-container {
+                padding: 20px 15px;
+            }
+            
+            .surprise-button {
+                padding: 16px 30px;
+                font-size: 1.2rem;
+            }
+            
+            .password-container {
+                padding: 30px 20px;
+            }
+            
+            .password-title {
+                font-size: 1.8rem;
+            }
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--secondary);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+        
+        /* Animation for page content */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .page-content > * {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        
+        /* Delay animations for children */
+        .page-content > *:nth-child(1) { animation-delay: 0.2s; }
+        .page-content > *:nth-child(2) { animation-delay: 0.4s; }
+        .page-content > *:nth-child(3) { animation-delay: 0.6s; }
+        .page-content > *:nth-child(4) { animation-delay: 0.8s; }
+        .page-content > *:nth-child(5) { animation-delay: 1s; }
+        .page-content > *:nth-child(6) { animation-delay: 1.2s; }
+        .page-content > *:nth-child(7) { animation-delay: 1.4s; }
+        
+        /* Initial state for animations */
+        .page-content > * {
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Password Screen -->
+    <div class="password-screen" id="passwordScreen">
+        <div class="password-container">
+            <h1 class="password-title">Welcome!</h1>
+            <p class="password-subtitle"></p>
+            
+            <input type="text" 
+                   class="password-input" 
+                   id="passwordInput" 
+                   placeholder="Password?" 
+                   autocomplete="off">
+            
+            <button class="password-button" id="passwordButton">
+                <i class="fas fa-heart"></i> Enter <i class="fas fa-heart"></i>
+            </button>
+            
+            <div class="password-error" id="passwordError"></div>
+            
+            <p class="password-hint">Hint: It's your name, love 💖</p>
+        </div>
+    </div>
+    
+    <!-- Animated hearts background -->
+    <div class="heart-background" id="heartBackground"></div>
+    
+    <!-- Main scrapbook container -->
+    <div class="scrapbook-container hidden" id="scrapbookContainer">
+        <div class="pages-container" id="pagesContainer">
+            <!-- Page 1: Cover -->
+            <div class="page" id="page1">
+                <div class="page-content">
+                    <h1 class="page-title">6th Monthsary</h1>
+                    <img src="https://i.ibb.co/tTgLtnzb/1765345750175.jpg" alt="Celebration" class="cover-photo">
+                    <div class="months-counter">
+                        <i class="fas fa-heart heart-icon"></i>
+                        Princess Jecel R. Hernandez
+                        <i class="fas fa-heart heart-icon"></i>
+                    </div>
+                    <p style="font-size: 1.2rem; margin-top: 15px; line-height: 1.5;">
+                        Half a year of love, laughter, and bembang.
+                    </p>
+                </div>
+                
+                <!-- Decorative stickers -->
+                <div class="sticker sticker-1">
+                    <i class="fas fa-heart fa-3x"></i>
+                </div>
+                <div class="sticker sticker-2">
+                    <i class="fas fa-kiss-wink-heart fa-3x"></i>
+                </div>
+            </div>
+            
+            <!-- Page 2: Love Letter -->
+            <div class="page" id="page2">
+                <div class="page-content">
+                    <h1 class="page-title">I Love Youuu</h1>
+                    <div class="love-letter">
+                        <p style="font-size: 1.1rem; line-height: 1.6; margin-bottom: 15px;">
+                            Hello my dear jecel,
+                        </p>
+                        <p style="font-size: 1.1rem; line-height: 1.6; margin-bottom: 15px;">
+                            Galing natin beh 6 months na us. I wavvv you very much, Thank youu so much sa lahat.
+                        </p>
+                        <p style="font-size: 1.1rem; line-height: 1.6; margin-bottom: 15px;">
+                            I hope more monthsaries to come pa, sana ako parin hanggang sa araw na yun Nyahahahahahaha.
+                        </p>
+                        <p style="font-size: 1.1rem; line-height: 1.6; margin-bottom: 15px;">
+                            Smolh lang ites huhuhu may surprise naman em next page hehehe.
+                        </p>
+                        <div class="signature">
+                            Forever yours
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 30px; font-size: 1.2rem;">
+                        <i class="fas fa-heart heart-icon"></i>
+                        Rielyy
+                        <i class="fas fa-heart heart-icon"></i>
+                    </div>
+                </div>
+                
+                <!-- Decorative stickers -->
+                <div class="sticker sticker-3">
+                    <i class="fas fa-star fa-3x"></i>
+                </div>
+                <div class="sticker sticker-4">
+                    <i class="fas fa-gift fa-3x"></i>
+                </div>
+            </div>
+            
+            <!-- Page 3: Must Read Page -->
+            <div class="page" id="page3">
+                <div class="page-content">
+                    <h1 class="page-title">Surprise >-<</h1>
+                    
+                    <div class="surprise-container">
+                        <p class="surprise-message">
+                            <i class="fas fa-heart"></i>
+                            MUST READ, hihihihi click mo yung download button beh.
+                            It's a Minecraft world (diko alam ano pinaggagawa ko dyan)
+                            Download the world beh then punta ka sa video settings ng mc mo,
+                            then set mo yung render distance to 12-13 then join ka sa world.
+                            <i class="fas fa-star"></i>
+                        </p>
+                        
+                        <button class="surprise-button" id="surpriseButton">
+                            <i class="fas fa-envelope-open-text envelope-icon"></i>
+                            Download
+                        </button>
+                        
+                        <p class="surprise-note">
+                            Cutieee talaga!!! I'm gonna explode na.
+                        </p>
+                    </div>
+                    
+                    <div style="margin-top: 30px; font-size: 1.1rem; color: #666;">
+                        <i class="fas fa-heart heart-icon"></i>
+                        Happy 6th Monthsary again love
+                        <i class="fas fa-heart heart-icon"></i>
+                    </div>
+                </div>
+                
+                <!-- Decorative stickers for surprise page -->
+                <div class="sticker sticker-5">
+                    <i class="fas fa-surprise fa-3x"></i>
+                </div>
+                <div class="sticker sticker-6">
+                    <i class="fas fa-gem fa-3x"></i>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Navigation buttons -->
+        <div class="navigation">
+            <button class="nav-btn" id="prevBtn">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            
+            <div class="page-indicators">
+                <div class="indicator active" data-page="0"></div>
+                <div class="indicator" data-page="1"></div>
+                <div class="indicator" data-page="2"></div>
+            </div>
+            
+            <button class="nav-btn" id="nextBtn">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Create animated heart background
+        const heartBackground = document.getElementById('heartBackground');
+        for (let i = 0; i < 20; i++) {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '<i class="fas fa-heart"></i>';
+            heart.style.left = `${Math.random() * 100}%`;
+            heart.style.fontSize = `${Math.random() * 20 + 10}px`;
+            heart.style.animationDuration = `${Math.random() * 20 + 15}s`;
+            heart.style.animationDelay = `${Math.random() * 5}s`;
+            heartBackground.appendChild(heart);
+        }
+        
+        // Password protection
+        const passwordScreen = document.getElementById('passwordScreen');
+        const scrapbookContainer = document.getElementById('scrapbookContainer');
+        const passwordInput = document.getElementById('passwordInput');
+        const passwordButton = document.getElementById('passwordButton');
+        const passwordError = document.getElementById('passwordError');
+        
+        // List of valid passwords (all lowercase for comparison)
+        const validPasswords = [
+            'princess jecel r. hernandez',
+            'princess jecel hernandez',
+            'princess jecel',
+            'jecel hernandez',
+            'jecel',
+            'hernandez',
+            'princess',
+            'daddyjess',
+            'daddy jess'
+        ];
+        
+        // Function to check if password is valid
+        function isValidPassword(input) {
+            const normalizedInput = input.trim().toLowerCase();
+            
+            // Check against all valid passwords
+            for (const validPassword of validPasswords) {
+                if (normalizedInput === validPassword) {
+                    return true;
+                }
+            }
+            
+            // Also check for partial matches (like "Princess" or "Jecel" as part of input)
+            for (const validPassword of validPasswords) {
+                if (normalizedInput.includes(validPassword) || validPassword.includes(normalizedInput)) {
+                    return true;
+                }
+            }
+            
+            return false;
+        }
+        
+        // Function to handle password submission
+        function handlePasswordSubmit() {
+            const inputValue = passwordInput.value.trim();
+            
+            if (!inputValue) {
+                passwordError.textContent = "Please enter your name";
+                passwordInput.focus();
+                return;
+            }
+            
+            if (isValidPassword(inputValue)) {
+                // Correct password - hide password screen and show scrapbook
+                passwordScreen.classList.add('hidden');
+                scrapbookContainer.classList.remove('hidden');
+                
+                // Initialize the scrapbook
+                initScrapbook();
+            } else {
+                // Wrong password
+                passwordError.textContent = "Hmm, that doesn't seem right. Try again!";
+                passwordInput.value = '';
+                passwordInput.focus();
+            }
+        }
+        
+        // Event listener for password button
+        passwordButton.addEventListener('click', handlePasswordSubmit);
+        
+        // Event listener for Enter key in password input
+        passwordInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                handlePasswordSubmit();
+            }
+        });
+        
+        // Focus on password input when page loads
+        passwordInput.focus();
+        
+        // Scrapbook functionality
+        function initScrapbook() {
+            const pagesContainer = document.getElementById('pagesContainer');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const indicators = document.querySelectorAll('.indicator');
+            const surpriseButton = document.getElementById('surpriseButton');
+            
+            let currentPage = 0;
+            const totalPages = 3;
+            
+            // Function to update page position
+            function goToPage(pageIndex) {
+                if (pageIndex < 0 || pageIndex >= totalPages) return;
+                
+                currentPage = pageIndex;
+                pagesContainer.style.transform = `translateX(-${currentPage * 100}vw)`;
+                
+                // Update indicators
+                indicators.forEach((indicator, index) => {
+                    if (index === currentPage) {
+                        indicator.classList.add('active');
+                    } else {
+                        indicator.classList.remove('active');
+                    }
+                });
+                
+                // Show/hide navigation buttons
+                prevBtn.classList.toggle('hidden', currentPage === 0);
+                nextBtn.classList.toggle('hidden', currentPage === totalPages - 1);
+                
+                // Trigger animations for new page content
+                const currentPageElement = document.querySelector(`#page${currentPage + 1}`);
+                const pageContent = currentPageElement.querySelector('.page-content');
+                const children = pageContent.children;
+                
+                // Reset animations
+                for (let child of children) {
+                    child.style.animation = 'none';
+                    void child.offsetWidth; // Trigger reflow
+                    child.style.animation = null;
+                }
+            }
+            
+            // Event listeners for navigation buttons
+            prevBtn.addEventListener('click', () => {
+                goToPage(currentPage - 1);
+            });
+            
+            nextBtn.addEventListener('click', () => {
+                goToPage(currentPage + 1);
+            });
+            
+            // Event listeners for indicators
+            indicators.forEach(indicator => {
+                indicator.addEventListener('click', () => {
+                    const pageIndex = parseInt(indicator.getAttribute('data-page'));
+                    goToPage(pageIndex);
+                });
+            });
+            
+            // Surprise button event listener
+            surpriseButton.addEventListener('click', function() {
+                // Add a visual effect when button is clicked
+                this.style.transform = 'scale(0.95)';
+                this.style.background = 'linear-gradient(135deg, #ff8fab, #ff6b8b)';
+                
+                // Replace this URL with your actual Minecraft world download link
+                window.location.href = "https://cdn.discordapp.com/attachments/1319980249366396961/1448241287483621406/6th_Bembang.mcworld?ex=693a8b4d&is=693939cd&hm=9394875266bc2460fceff392a443d50595f8960db5f0c6ff26bf733e2adf641b&";
+                
+                // When you're ready to add your actual link, replace the above line with:
+                // window.location.href = "YOUR_ACTUAL_DOWNLOAD_LINK_HERE";
+                
+                // Reset button after click (though redirect will happen quickly)
+                setTimeout(() => {
+                    this.style.transform = '';
+                    this.style.background = 'linear-gradient(135deg, var(--primary), var(--accent))';
+                }, 300);
+            });
+            
+            // Swipe support for mobile
+            let touchStartX = 0;
+            let touchEndX = 0;
+            
+            pagesContainer.addEventListener('touchstart', e => {
+                touchStartX = e.changedTouches[0].screenX;
+            });
+            
+            pagesContainer.addEventListener('touchend', e => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            });
+            
+            function handleSwipe() {
+                const swipeThreshold = 50;
+                const diff = touchStartX - touchEndX;
+                
+                if (Math.abs(diff) > swipeThreshold) {
+                    if (diff > 0) {
+                        // Swipe left - go to next page
+                        goToPage(currentPage + 1);
+                    } else {
+                        // Swipe right - go to previous page
+                        goToPage(currentPage - 1);
+                    }
+                }
+            }
+            
+            // Initialize first page
+            goToPage(0);
+        }
+    </script>
+</body>
+</html>
