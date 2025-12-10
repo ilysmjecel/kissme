@@ -27,6 +27,8 @@
             overflow-x: hidden;
             height: 100vh;
             position: relative;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
         
         /* Password Screen Styles */
@@ -201,6 +203,8 @@
             max-width: 500px;
             text-align: center;
             padding: 15px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
         
         .heart-icon {
@@ -226,6 +230,9 @@
             background-color: rgba(255, 204, 213, 0.5);
             padding: 10px 20px;
             border-radius: 30px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            hyphens: auto;
         }
         
         /* Page 2 specific styles */
@@ -237,6 +244,8 @@
             margin-top: 20px;
             position: relative;
             border-left: 8px solid var(--primary);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
         
         .love-letter:before {
@@ -268,6 +277,8 @@
             margin-top: 20px;
             position: relative;
             border: 3px dashed var(--primary);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
         
         .surprise-message {
@@ -275,6 +286,10 @@
             line-height: 1.6;
             margin-bottom: 30px;
             color: #333;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            hyphens: auto;
+            text-align: left;
         }
         
         .surprise-message i {
@@ -298,6 +313,10 @@
             justify-content: center;
             gap: 12px;
             margin-top: 20px;
+            width: 100%;
+            max-width: 300px;
+            margin-left: auto;
+            margin-right: auto;
         }
         
         .surprise-button:hover {
@@ -326,6 +345,8 @@
             padding: 10px;
             background-color: rgba(255, 255, 255, 0.7);
             border-radius: 10px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
         
         /* Navigation */
@@ -461,6 +482,7 @@
             .surprise-button {
                 padding: 16px 30px;
                 font-size: 1.2rem;
+                max-width: 280px;
             }
             
             .password-container {
@@ -469,6 +491,54 @@
             
             .password-title {
                 font-size: 1.8rem;
+            }
+            
+            .surprise-message {
+                font-size: 1.1rem;
+                line-height: 1.5;
+            }
+            
+            .months-counter {
+                font-size: 1.3rem;
+                padding: 8px 16px;
+            }
+            
+            .page-content {
+                padding: 10px;
+            }
+            
+            .page {
+                padding: 15px;
+            }
+            
+            .navigation {
+                padding: 15px;
+            }
+        }
+        
+        /* Extra small devices */
+        @media (max-width: 360px) {
+            .page-title {
+                font-size: 1.6rem;
+            }
+            
+            .surprise-message {
+                font-size: 1rem;
+            }
+            
+            .months-counter {
+                font-size: 1.2rem;
+            }
+            
+            .surprise-button {
+                padding: 14px 25px;
+                font-size: 1.1rem;
+                max-width: 250px;
+            }
+            
+            .cover-photo {
+                width: 160px;
+                height: 160px;
             }
         }
         
@@ -514,6 +584,13 @@
         /* Initial state for animations */
         .page-content > * {
             opacity: 0;
+        }
+        
+        /* Better text handling for mobile */
+        p, div, span {
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            hyphens: auto;
         }
     </style>
 </head>
@@ -828,11 +905,8 @@
                 this.style.transform = 'scale(0.95)';
                 this.style.background = 'linear-gradient(135deg, #ff8fab, #ff6b8b)';
                 
-                // Replace this URL with your actual Minecraft world download link
+                // Redirect directly to the link without showing any notification
                 window.location.href = "https://cdn.discordapp.com/attachments/1319980249366396961/1448241287483621406/6th_Bembang.mcworld?ex=693a8b4d&is=693939cd&hm=9394875266bc2460fceff392a443d50595f8960db5f0c6ff26bf733e2adf641b&";
-                
-                // When you're ready to add your actual link, replace the above line with:
-                // window.location.href = "YOUR_ACTUAL_DOWNLOAD_LINK_HERE";
                 
                 // Reset button after click (though redirect will happen quickly)
                 setTimeout(() => {
