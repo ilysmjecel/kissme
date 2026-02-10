@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Valentine Letter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Aldrich&family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet" />
+    
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: url("heart-bg.jpg");
+            font-family: "Pixelify Sans", sans-serif;
+        }
+
+        /* Envelope Screen */
+        #envelope-container {
+            text-align: center;
+            cursor: pointer;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            50% { transform: translateX(10px); }
+            75% { transform: translateX(-10px); }
+            100% { transform: translateX(0); }
+        }
+
+        #envelope {
+            width: 200px;
+            animation: pulse 1.5s infinite;
+            cursor: pointer;
+        }
+
+        #letter-container {
+            display: none;
+            position: fixed;
+            inset: 0;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .letter-window {
+            width: 90vw;
+            max-width: 800px;
+            aspect-ratio: 3/2;
+            padding: 20px 20px 0 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background-image: url("window.png");
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            border-radius: 12px;
+            gap: 1px;
+            padding-top: 180px;
+            transform: scale(1.2);
+            opacity: 0;
+            transition: transform 0.6s ease, opacity 0.6s ease;
+        }
+
+        .letter-window.open {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        h1 {
+            font-size: 30px;
+            margin: 0;
+        }
+
+        p {
+            font-size: 40px;
+        }
+
+        /* Cat */
+        .cat {
+            width: 250px;
+            margin: 10px 0;
+            transition: width 0.4s ease;
+        }
+
+        .letter-window.final .cat {
+            width: 180px;
+        }
+
+        /* buttons */
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            position: relative;
+            margin-top: 20px;
+        }
+
+        .no-wrapper {
+            position: relative;
+        }
+
+        .btn {
+            width: 120px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .yes-btn,
+        .no-btn {
+            width: 120px;
+            height: auto;
+            display: inline-block;
+        }
+
+        .yes-btn {
+            position: relative;
+            z-index: 2;
+            transform-origin: center center;
+            transition: transform 0.3s ease;
+        }
+
+        .no-btn {
+            z-index: 1;
+            position: relative;
+            transition: transform 0.15s ease;
+            cursor: default;
+        }
+
+        .final-text {
+            font-size: 22px;
+            line-height: 1.4;
+            text-align: center;
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: rgba(255, 240, 240, 0.5);
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        /* Flower buttons */
+        .flower-btn {
+            width: 100px;
+            cursor: pointer;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        /* Chocolate buttons - made bigger */
+        .chocolate-btn {
+            width: 140px; /* Increased from 100px to 140px */
+            cursor: pointer;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .flower-btn:hover, .chocolate-btn:hover {
+            transform: scale(1.05);
+        }
+
+        #flower-buttons, #chocolate-buttons {
+            gap: 20px;
+        }
+
+        /* Feedback messages */
+        .feedback {
+            margin-top: 20px;
+            font-size: 18px;
+            background-color: rgba(255, 220, 220, 0.7);
+            display: none;
+        }
+
+        /* Final love message */
+        #final-love-message {
+            font-size: 28px;
+            line-height: 1.4;
+            text-align: center;
+            display: inline-block;
+            padding: 15px 25px;
+            background-color: rgba(255, 220, 240, 0.8);
+            border-radius: 15px;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            #flower-buttons {
+                flex-wrap: wrap;
+            }
+            
+            .flower-btn {
+                width: 80px;
+                margin: 5px;
+            }
+            
+            .chocolate-btn {
+                width: 110px; /* Slightly smaller for mobile but still bigger than original */
+            }
+            
+            #chocolate-buttons {
+                gap: 30px;
+            }
+            
+            .letter-window {
+                padding-top: 150px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .final-text {
+                font-size: 18px;
+            }
+            
+            #final-love-message {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Envelope Screen -->
+    <div id="envelope-container">
+        <img src="envelope.png" alt="Envelope" id="envelope" />
+        <p>♡ Letter for You ♡</p>
+    </div>
+
+    <!-- Letter Screen -->
+    <div id="letter-container">
+        <!-- Question 1: Valentine Question (Now First) -->
+        <div class="letter-window" id="valentine-question">
+            <h1 id="valentine-title">Will you be my Valentine?</h1>
+            <img src="cat_heart.gif" class="cat" id="valentine-cat" />
+            <div class="buttons" id="valentine-buttons">
+                <img src="yes.png" class="btn yes-btn" alt="Yes" id="yes-btn-final" />
+                <div class="no-wrapper">
+                    <img src="no.png" class="btn no-btn" alt="No" id="no-btn-final" />
+                </div>
+            </div>
+            <p id="final-text" class="final-text" style="display: none">
+                <strong>Yieeeeeee</strong><br>
+            </p>
+        </div>
+
+        <!-- Question 2: Flower Question -->
+        <div class="letter-window" id="flower-question" style="display: none">
+            <h1 id="flower-title">What flower should I bring to you?</h1>
+            <img src="cat_heart.gif" class="cat" id="flower-cat" />
+            <div class="buttons" id="flower-buttons">
+                <img src="rose.png" class="btn flower-btn" alt="Rose" data-answer="rose" />
+                <img src="tulips.png" class="btn flower-btn" alt="Tulips" data-answer="tulips" />
+                <img src="other_flower.png" class="btn flower-btn" alt="Other" data-answer="other" />
+            </div>
+            <p id="flower-feedback" class="final-text feedback">
+                Wrong answer! Try again. Hint: It's the one that starts with "T" 🌷
+            </p>
+        </div>
+
+        <!-- Question 3: Chocolates or Gifts -->
+        <div class="letter-window" id="chocolate-question" style="display: none">
+            <h1 id="chocolate-title">Chocolates or Gifts?</h1>
+            <img src="cat_heart.gif" class="cat" id="chocolate-cat" />
+            <div class="buttons" id="chocolate-buttons">
+                <img src="chocolates.png" class="btn chocolate-btn" alt="Chocolates" data-answer="chocolates" />
+                <img src="gifts.png" class="btn chocolate-btn" alt="Gifts" data-answer="gifts" />
+            </div>
+            <p id="chocolate-feedback" class="final-text feedback" style="font-size: 18px; display: none;">
+                Great! I'll bring both! 😊
+            </p>
+        </div>
+
+        <!-- Final Love Screen -->
+        <div class="letter-window" id="final-love-screen" style="display: none">
+            <h1 id="love-title">Coming soon...</h1>
+            <img src="dance.gif" class="cat" id="dancing-cat" />
+            <p id="final-love-message">
+                I Loveee youu
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Elements
+        const envelope = document.getElementById("envelope-container");
+        const letter = document.getElementById("letter-container");
+
+        // Question screens
+        const valentineQuestion = document.getElementById("valentine-question");
+        const flowerQuestion = document.getElementById("flower-question");
+        const chocolateQuestion = document.getElementById("chocolate-question");
+        const finalLoveScreen = document.getElementById("final-love-screen");
+
+        // Valentine question elements
+        const noBtn = document.getElementById("no-btn-final");
+        const yesBtn = document.getElementById("yes-btn-final");
+        const title = document.getElementById("valentine-title");
+        const catImg = document.getElementById("valentine-cat");
+        const buttons = document.getElementById("valentine-buttons");
+        const finalText = document.getElementById("final-text");
+
+        // Flower question elements
+        const flowerButtons = document.querySelectorAll(".flower-btn");
+        const flowerFeedback = document.getElementById("flower-feedback");
+
+        // Chocolate question elements
+        const chocolateButtons = document.querySelectorAll(".chocolate-btn");
+        const chocolateFeedback = document.getElementById("chocolate-feedback");
+
+        // Click Envelope
+        envelope.addEventListener("click", () => {
+            envelope.style.display = "none";
+            letter.style.display = "flex";
+
+            setTimeout(() => {
+                valentineQuestion.classList.add("open");
+            }, 50);
+        });
+
+        // Logic to move the NO btn (for valentine question)
+        noBtn.addEventListener("mouseover", (e) => {
+            const min = 200;
+            const max = 200;
+            const distance = Math.random() * (max - min) + min;
+            const angle = Math.random() * Math.PI * 2;
+            const moveX = Math.cos(angle) * distance;
+            const moveY = Math.sin(angle) * distance;
+
+            e.target.style.transition = "transform 0.3s ease";
+            e.target.style.transform = `translate(${moveX}px, ${moveY}px)`;
+        });
+
+        // YES is clicked (for valentine question)
+        yesBtn.addEventListener("click", () => {
+            title.textContent = "Yippeeee!";
+            document.getElementById("valentine-cat").src = "cat_dance.gif";
+            valentineQuestion.classList.add("final");
+            buttons.style.display = "none";
+            finalText.style.display = "block";
+            
+            // Move to next question after a delay
+            setTimeout(() => {
+                valentineQuestion.classList.remove("open");
+                setTimeout(() => {
+                    valentineQuestion.style.display = "none";
+                    flowerQuestion.style.display = "flex";
+                    setTimeout(() => {
+                        flowerQuestion.classList.add("open");
+                    }, 50);
+                }, 300);
+            }, 2000); // 2 second delay before moving to next question
+        });
+
+        // Flower Question Logic
+        flowerButtons.forEach(button => {
+            button.addEventListener("click", () => {
+                const answer = button.getAttribute("data-answer");
+                
+                if (answer === "tulips") {
+                    // Correct answer - move to next question
+                    flowerQuestion.classList.remove("open");
+                    setTimeout(() => {
+                        flowerQuestion.style.display = "none";
+                        chocolateQuestion.style.display = "flex";
+                        setTimeout(() => {
+                            chocolateQuestion.classList.add("open");
+                        }, 50);
+                    }, 300);
+                } else {
+                    // Wrong answer - show feedback
+                    flowerFeedback.style.display = "block";
+                    flowerButtons.forEach(btn => {
+                        btn.style.opacity = "0.6";
+                    });
+                    button.style.opacity = "1";
+                    button.style.animation = "shake 0.5s";
+                    
+                    setTimeout(() => {
+                        button.style.animation = "";
+                    }, 500);
+                }
+            });
+        });
+
+        // Chocolate Question Logic
+        chocolateButtons.forEach(button => {
+            button.addEventListener("click", () => {
+                chocolateButtons.forEach(btn => {
+                    btn.style.opacity = "0.6";
+                });
+                button.style.opacity = "1";
+                
+                // Show feedback message "Great! I'll bring both! 😊"
+                chocolateFeedback.style.display = "block";
+                
+                // Wait 2 seconds then show final love screen
+                setTimeout(() => {
+                    chocolateQuestion.classList.remove("open");
+                    setTimeout(() => {
+                        chocolateQuestion.style.display = "none";
+                        finalLoveScreen.style.display = "flex";
+                        setTimeout(() => {
+                            finalLoveScreen.classList.add("open");
+                        }, 50);
+                    }, 300);
+                }, 2000); // Wait 2 seconds then show final screen
+            });
+        });
+
+        // Reset opacity for buttons when hovering
+        flowerButtons.forEach(btn => {
+            btn.addEventListener('mouseenter', () => {
+                btn.style.opacity = "1";
+            });
+            btn.addEventListener('mouseleave', () => {
+                if (flowerFeedback.style.display !== 'block') {
+                    btn.style.opacity = "1";
+                }
+            });
+        });
+
+        chocolateButtons.forEach(btn => {
+            btn.addEventListener('mouseenter', () => {
+                btn.style.opacity = "1";
+            });
+            btn.addEventListener('mouseleave', () => {
+                if (chocolateFeedback.style.display !== 'block') {
+                    btn.style.opacity = "1";
+                }
+            });
+        });
+    </script>
+</body>
+</html>
