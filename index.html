@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <title>Valentine Letter</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Aldrich&family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet" />
@@ -18,14 +18,12 @@
             background-image: url("heart-bg.jpg");
             font-family: "Pixelify Sans", sans-serif;
             overflow: hidden;
-            transform-origin: center center;
         }
 
         /* Envelope Screen */
         #envelope-container {
             text-align: center;
             cursor: pointer;
-            transform-origin: center center;
         }
 
         @keyframes pulse {
@@ -60,30 +58,29 @@
             inset: 0;
             justify-content: center;
             align-items: center;
-            transform-origin: center center;
+            background-image: url("heart-bg.jpg");
+            background-size: cover;
+            padding: 20px;
         }
 
         .letter-window {
-            width: 90vw;
-            max-width: 800px;
-            aspect-ratio: 3/2;
-            padding: 20px 20px 0 20px;
+            width: 90%;
+            max-width: 700px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
-            background-image: url("window.png");
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
             border-radius: 12px;
-            gap: 1px;
-            padding-top: 180px;
+            gap: 15px;
+            padding: 40px 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             transform: scale(1.2);
             opacity: 0;
             transition: transform 0.6s ease, opacity 0.6s ease;
-            transform-origin: center center;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         .letter-window.open {
@@ -92,17 +89,19 @@
         }
 
         h1 {
-            font-size: 30px;
+            font-size: 32px;
             margin: 0;
+            color: #d32f2f;
         }
 
         p {
-            font-size: 40px;
+            font-size: 20px;
+            margin: 10px 0;
         }
 
         /* Cat */
         .cat {
-            width: 250px;
+            width: 200px;
             margin: 10px 0;
             transition: width 0.4s ease;
         }
@@ -115,9 +114,11 @@
         .buttons {
             display: flex;
             justify-content: center;
-            gap: 30px;
+            align-items: center;
+            gap: 20px;
             position: relative;
-            margin-top: 20px;
+            margin-top: 10px;
+            flex-wrap: wrap;
         }
 
         .no-wrapper {
@@ -128,6 +129,11 @@
             width: 120px;
             cursor: pointer;
             user-select: none;
+            transition: transform 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
         }
 
         .yes-btn,
@@ -141,55 +147,56 @@
             position: relative;
             z-index: 2;
             transform-origin: center center;
-            transition: transform 0.3s ease;
         }
 
         .no-btn {
             z-index: 1;
             position: relative;
-            transition: transform 0.15s ease;
             cursor: default;
         }
 
         .final-text {
-            font-size: 22px;
-            line-height: 1.4;
+            font-size: 20px;
+            line-height: 1.5;
             text-align: center;
             display: inline-block;
-            padding: 10px 20px;
-            background-color: rgba(255, 240, 240, 0.5);
+            padding: 15px 25px;
+            background-color: rgba(255, 240, 240, 0.9);
             border-radius: 12px;
-            margin-top: 20px;
+            margin-top: 15px;
+            border: 2px dashed #ff6b6b;
         }
 
-        /* Flower buttons */
-        .flower-btn {
+        /* Flower and chocolate buttons */
+        .flower-btn, .chocolate-btn {
             width: 100px;
             cursor: pointer;
-            transition: opacity 0.3s ease, transform 0.3s ease;
+            transition: all 0.3s ease;
+            margin: 5px;
         }
 
-        /* Chocolate buttons */
         .chocolate-btn {
-            width: 140px;
-            cursor: pointer;
-            transition: opacity 0.3s ease, transform 0.3s ease;
+            width: 130px;
         }
 
         .flower-btn:hover, .chocolate-btn:hover {
-            transform: scale(1.05);
+            transform: scale(1.1);
         }
 
         #flower-buttons, #chocolate-buttons {
-            gap: 20px;
+            gap: 15px;
+            justify-content: center;
         }
 
         /* Feedback messages */
         .feedback {
-            margin-top: 20px;
+            margin-top: 15px;
             font-size: 18px;
-            background-color: rgba(255, 220, 220, 0.7);
+            background-color: rgba(255, 220, 220, 0.9);
             display: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            border: 2px solid #ff9999;
         }
 
         /* Final love message */
@@ -198,28 +205,21 @@
             line-height: 1.4;
             text-align: center;
             display: inline-block;
-            padding: 15px 25px;
-            background-color: rgba(255, 220, 240, 0.8);
+            padding: 20px 30px;
+            background-color: rgba(255, 220, 240, 0.95);
             border-radius: 15px;
             margin-top: 20px;
             font-weight: bold;
+            color: #c2185b;
+            border: 3px solid #ff80ab;
         }
 
-        /* Mobile zoom and compatibility */
+        /* Mobile responsiveness */
         @media (max-width: 768px) {
-            body {
-                transform: scale(1.2);
-                width: 100vw;
-                height: 100vh;
-            }
-            
-            #envelope {
-                width: 180px;
-            }
-            
             .letter-window {
-                width: 85vw;
-                padding-top: 160px;
+                width: 95%;
+                padding: 30px 15px;
+                gap: 10px;
             }
             
             h1 {
@@ -227,7 +227,7 @@
             }
             
             .cat {
-                width: 220px;
+                width: 180px;
             }
             
             .btn {
@@ -239,38 +239,31 @@
             }
             
             .chocolate-btn {
-                width: 120px;
+                width: 110px;
             }
             
-            .final-text {
-                font-size: 20px;
+            .buttons {
+                gap: 15px;
             }
             
             #final-love-message {
                 font-size: 24px;
+                padding: 15px 20px;
+            }
+            
+            .final-text {
+                font-size: 18px;
+                padding: 12px 20px;
             }
         }
 
         @media (max-width: 480px) {
-            body {
-                transform: scale(1.4);
-            }
-            
-            #envelope {
-                width: 160px;
-            }
-            
-            .letter-window {
-                width: 80vw;
-                padding-top: 140px;
-            }
-            
             h1 {
-                font-size: 24px;
+                font-size: 22px;
             }
             
             .cat {
-                width: 200px;
+                width: 160px;
             }
             
             .btn {
@@ -282,23 +275,25 @@
             }
             
             .chocolate-btn {
-                width: 110px;
+                width: 95px;
             }
             
             .buttons {
-                gap: 20px;
+                gap: 10px;
             }
             
-            #flower-buttons, #chocolate-buttons {
-                gap: 15px;
+            #final-love-message {
+                font-size: 20px;
+                padding: 12px 18px;
             }
-        }
-
-        /* Prevent zooming and scrolling */
-        @media (max-width: 768px) {
-            html, body {
-                touch-action: manipulation;
-                overscroll-behavior: none;
+            
+            #envelope {
+                width: 150px;
+            }
+            
+            .final-text {
+                font-size: 16px;
+                padding: 10px 15px;
             }
         }
     </style>
@@ -404,8 +399,8 @@
 
         // Logic to move the NO btn (for valentine question)
         noBtn.addEventListener("mouseover", (e) => {
-            const min = 200;
-            const max = 200;
+            const min = 150;
+            const max = 150;
             const distance = Math.random() * (max - min) + min;
             const angle = Math.random() * Math.PI * 2;
             const moveX = Math.cos(angle) * distance;
